@@ -1,11 +1,515 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import About from '../components/About.astro';
+import Resume from '../components/Resume.astro';
+import Photos from '../components/Photos.astro';
+import Blog from '../components/Blog.astro';
+
+const tabs = [
+  { id: 'about',  label: 'About',  color: '#8c2535' },
+  { id: 'resume', label: 'Resume', color: '#1f4d8a' },
+  { id: 'photos', label: 'Photos', color: '#1f6b52' },
+  { id: 'blog',   label: 'Blog',   color: '#6b4e2a' },
+];
 ---
 
-<Layout title="About">
-  <h1>Hi, I'm Bruce</h1>
-  <p style="margin-top: 1rem; color: #555; line-height: 1.7;">
-    Welcome to my personal space. I'm a software engineer based in [City].
-    This is where I share my background, resume, photos, and writing.
-  </p>
+<Layout title="Bruce Chen">
+  <div class="book-wrapper">
+    <div class="book">
+
+      <!-- Left: spine / drawer -->
+      <div class="spine">
+        <button class="spine-title" id="btn-cover">
+          <img src="/WhoIsBruce/headshot.jpg" alt="Bruce Chen" class="headshot" />
+          <span class="spine-name">Bruce Chen</span>
+        </button>
+        <nav class="tabs">
+          {tabs.map((t, i) => (
+            <div
+              class="tab-wrap"
+              data-section={t.id}
+              style={`--c: ${t.color}; --i: ${i}`}
+            >
+              <div class="tab-fill"></div>
+              <button class="tab-label">{t.label}</button>
+            </div>
+          ))}
+        </nav>
+      </div>
+
+      <!-- Right: content -->
+      <div class="pages">
+
+          <div class="page active" id="page-cover">
+            <div class="cover">
+              <div class="term-window">
+                <div class="term-chrome">
+                  <span class="term-dot dot-r"></span>
+                  <span class="term-dot dot-y"></span>
+                  <span class="term-dot dot-g"></span>
+                  <span class="term-title">bash — bchen@hal9000</span>
+                </div>
+                <div class="term-body">
+                  <div class="term-line">
+                    <span class="term-prompt">$ </span><span id="t-cmd"></span><span class="term-cursor" id="c-cmd">█</span>
+                  </div>
+                  <div class="term-gap"></div>
+                  <div class="term-line term-out" id="line-1" style="visibility:hidden">
+                    <span class="hal-tag">[HAL]:</span> <span id="t-1"></span><span class="term-cursor" id="c-1" style="visibility:hidden">█</span>
+                  </div>
+                  <div class="term-line term-out" id="line-2" style="visibility:hidden">
+                    <span class="hal-tag">[HAL]:</span> <span id="t-2"></span><span class="term-cursor" id="c-2" style="visibility:hidden">█</span>
+                  </div>
+                  <div class="term-line term-out" id="line-3" style="visibility:hidden">
+                    <span class="hal-tag">[HAL]:</span> <span id="t-3"></span><span class="term-cursor" id="c-3" style="visibility:hidden">█</span>
+                  </div>
+                  <div class="term-gap"></div>
+                  <div class="term-line term-name-line" id="name-line" style="visibility:hidden">
+                    <span id="t-name"></span><span class="term-cursor" id="c-name" style="visibility:hidden">█</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="page" id="page-about"><About /></div>
+          <div class="page" id="page-resume"><Resume /></div>
+          <div class="page" id="page-photos"><Photos /></div>
+          <div class="page" id="page-blog"><Blog /></div>
+
+      </div>
+
+    </div>
+  </div>
 </Layout>
+
+<style is:global>
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .book-wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+  }
+
+  .book {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* ── Spine / drawer panel ── */
+  .spine {
+    width: 180px;
+    flex-shrink: 0;
+    background: #1a1a1c;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    position: relative;
+    z-index: 10;
+  }
+
+  .spine-title {
+    padding: 1.25rem 1.25rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: transparent;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: opacity 0.2s;
+  }
+  .spine-title:hover { opacity: 0.8; }
+
+  .spine-name {
+    font-family: system-ui, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .headshot {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+
+
+  /* The drawer container — fills remaining spine height */
+  .tabs {
+    position: relative;
+    flex: 1;
+  }
+
+  /*
+   * Folders anchor from the bottom of the drawer.
+   * --ri = reversed index (About=3, Blog=0) controls stacking order:
+   *   bottom: calc(--ri * TAB_H)  — how far up from drawer floor
+   *   height: calc(100% - --ri * TAB_H) — body fills from floor upward
+   *   z-index: --ri  — About on top visually, Blog in back
+   */
+  .tab-wrap {
+    position: absolute;
+    left: 0; right: 0;
+    top: calc(var(--i) * 62px);
+    height: 62px;
+    z-index: var(--i);
+    pointer-events: none;
+    transition: filter 0.22s ease;
+  }
+
+  /* Colored folder body — darker inside the drawer, brighter at the label face */
+  .tab-fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      var(--c) 0%,
+      color-mix(in srgb, var(--c) 60%, #000) 100%
+    );
+  }
+
+  /* Clickable label strip — sits at the top of each folder */
+  .tab-label {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 62px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.92);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    pointer-events: auto;
+    font-family: system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    padding: 0 1.4rem;
+  }
+
+  /* Hover: brighten only, no movement */
+  .tab-wrap:has(.tab-label:hover) {
+    filter: brightness(1.22);
+  }
+
+  /* Active: brighter to show selection */
+  .tab-wrap.active {
+    filter: brightness(1.35);
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.4);
+  }
+
+  /* ── Pages ── */
+  .pages {
+    flex: 1;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+  }
+
+  .page {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateY(18px);
+    pointer-events: none;
+    transition: none;
+  }
+
+  .page.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  .page.exit {
+    opacity: 0;
+    transform: translateY(-12px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  /* ── Cover ── */
+  .cover {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, #252528 0%, #1a1a1c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Terminal window */
+  .term-window {
+    width: min(1170px, 90%);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .term-chrome {
+    background: #2a2a2e;
+    padding: 0.65rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-bottom: 1px solid rgba(0,0,0,0.4);
+  }
+
+  .term-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .term-title {
+    flex: 1;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.03em;
+    margin-right: 52px; /* visually centers relative to dots */
+  }
+
+  .term-body {
+    background: #0d1117;
+    padding: 3.5rem 4rem 5rem;
+    font-family: 'Courier New', Courier, monospace;
+    min-height: 360px;
+  }
+
+  .term-line {
+    line-height: 1.7;
+  }
+
+  .term-prompt {
+    color: #3fb950;
+    font-size: 1.5rem;
+    font-weight: 700;
+    user-select: none;
+  }
+
+  #t-cmd, #t-1, #t-2, #t-3 {
+    color: #e6edf3;
+    font-size: 1.5rem;
+  }
+
+  .hal-tag {
+    color: #f87171;
+    font-size: 1.5rem;
+  }
+
+  .term-gap {
+    height: 0.75rem;
+  }
+
+  .term-name-line {
+    margin-top: 0.5rem;
+  }
+
+  #t-name {
+    font-size: clamp(3.3rem, 7.5vw, 4.8rem);
+    font-weight: 700;
+    color: #e6edf3;
+  }
+
+  .term-cursor {
+    color: #3fb950;
+    font-size: 1.5rem;
+    animation: blink 0.75s step-end infinite;
+  }
+
+  #c-name {
+    font-size: clamp(3.3rem, 7.5vw, 4.8rem);
+    color: #e6edf3;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+
+  /* ── Section content ── */
+  .section-content {
+    padding: 3rem;
+  }
+
+  .section-content h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #111;
+  }
+
+  .section-content p {
+    color: #555;
+    line-height: 1.7;
+  }
+</style>
+
+<script>
+  /* ── Typewriter ── */
+  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+  let twToken = 0;
+
+  async function runTypewriter() {
+    const token = ++twToken;
+
+    const cmdEl    = document.getElementById('t-cmd')!;
+    const cCmd     = document.getElementById('c-cmd')!;
+    const line1    = document.getElementById('line-1')!;
+    const t1       = document.getElementById('t-1')!;
+    const c1       = document.getElementById('c-1')!;
+    const line2    = document.getElementById('line-2')!;
+    const t2       = document.getElementById('t-2')!;
+    const c2       = document.getElementById('c-2')!;
+    const line3    = document.getElementById('line-3')!;
+    const t3       = document.getElementById('t-3')!;
+    const c3       = document.getElementById('c-3')!;
+    const nameLine = document.getElementById('name-line')!;
+    const nameEl   = document.getElementById('t-name')!;
+    const cName    = document.getElementById('c-name')!;
+
+    // Reset
+    cmdEl.textContent = '';
+    t1.textContent = ''; t2.textContent = ''; t3.textContent = '';
+    nameEl.textContent = '';
+    cCmd.style.visibility = 'visible';
+    line1.style.visibility = 'hidden';
+    line2.style.visibility = 'hidden';
+    line3.style.visibility = 'hidden';
+    nameLine.style.visibility = 'hidden';
+    c1.style.visibility = 'hidden';
+    c2.style.visibility = 'hidden';
+    c3.style.visibility = 'hidden';
+    cName.style.visibility = 'hidden';
+    cName.style.opacity = '1';
+    cName.style.transition = 'none';
+
+    const alive = () => twToken === token;
+
+    const type = async (el: HTMLElement, text: string, speed = 70) => {
+      for (const ch of text) {
+        if (!alive()) return;
+        el.textContent += ch;
+        await sleep(speed + Math.random() * 45);
+      }
+    };
+    const del = async (el: HTMLElement, count: number, speed = 85) => {
+      for (let i = 0; i < count; i++) {
+        if (!alive()) return;
+        el.textContent = el.textContent!.slice(0, -1);
+        await sleep(speed + Math.random() * 30);
+      }
+    };
+
+    // Type command with a small typo
+    await sleep(400);                                          if (!alive()) return;
+    await type(cmdEl, 'hal9000 --identtify', 42);              if (!alive()) return;
+    await sleep(200);                                          if (!alive()) return;
+    await del(cmdEl, 4, 60);                                   if (!alive()) return;
+    await type(cmdEl, 'ify user', 42);                         if (!alive()) return;
+    await sleep(350);                                          if (!alive()) return;
+    cCmd.style.visibility = 'hidden';
+
+    // HAL line 1
+    await sleep(250);                                          if (!alive()) return;
+    line1.style.visibility = 'visible';
+    c1.style.visibility = 'visible';
+    await type(t1, 'Good morning.', 36);                       if (!alive()) return;
+    await sleep(120);                                          if (!alive()) return;
+    c1.style.visibility = 'hidden';
+
+    // HAL line 2
+    await sleep(220);                                          if (!alive()) return;
+    line2.style.visibility = 'visible';
+    c2.style.visibility = 'visible';
+    await type(t2, 'Retrieving crew manifest...', 30);         if (!alive()) return;
+    await sleep(120);                                          if (!alive()) return;
+    c2.style.visibility = 'hidden';
+
+    // HAL line 3
+    await sleep(220);                                          if (!alive()) return;
+    line3.style.visibility = 'visible';
+    c3.style.visibility = 'visible';
+    await type(t3, 'I think you should meet someone.', 30);    if (!alive()) return;
+    await sleep(120);                                          if (!alive()) return;
+    c3.style.visibility = 'hidden';
+
+    // Name reveal
+    await sleep(550);                                          if (!alive()) return;
+    nameLine.style.visibility = 'visible';
+    cName.style.visibility = 'visible';
+    await type(nameEl, 'Bruce', 70);                           if (!alive()) return;
+    await sleep(1000);                                         if (!alive()) return;
+    cName.style.transition = 'opacity 0.6s ease';
+    cName.style.opacity = '0';
+  }
+
+  runTypewriter();
+
+  /* ── Tabs ── */
+  const wrappers = document.querySelectorAll<HTMLElement>('.tab-wrap');
+  let current = 'cover';
+  let animating = false;
+
+  document.getElementById('btn-cover')?.addEventListener('click', () => {
+    transitionTo('cover');
+    wrappers.forEach(w => w.classList.remove('active'));
+    runTypewriter();
+  });
+
+  function transitionTo(target: string) {
+    if (target === current || animating) return;
+    animating = true;
+
+    const outEl = document.getElementById(`page-${current}`);
+    const inEl  = document.getElementById(`page-${target}`);
+    if (!outEl || !inEl) return;
+
+    outEl.classList.add('exit');
+    outEl.classList.remove('active');
+
+    setTimeout(() => {
+      outEl.classList.remove('exit');
+      inEl.classList.add('active');
+      current = target;
+      setTimeout(() => { animating = false; }, 350);
+    }, 200);
+  }
+
+  wrappers.forEach(wrap => {
+    wrap.querySelector('.tab-label')?.addEventListener('click', () => {
+      const target = wrap.dataset.section!;
+      wrappers.forEach(w => w.classList.remove('active'));
+      wrap.classList.add('active');
+      transitionTo(target);
+    });
+  });
+</script>
