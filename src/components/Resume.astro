@@ -1,4 +1,470 @@
-<div class="section-content">
-  <h2>Resume</h2>
-  <p>Coming soon.</p>
+<div class="resume-terminal">
+
+  <!-- Chrome -->
+  <div class="r-chrome">
+    <span class="r-dot dot-r"></span>
+    <span class="r-dot dot-y"></span>
+    <span class="r-dot dot-g"></span>
+    <span class="r-title">bash — bchen@hal9000</span>
+  </div>
+
+  <!-- Split panes -->
+  <div class="r-panes">
+
+    <!-- Left: output -->
+    <div class="r-output-pane">
+      <div id="resume-output"></div>
+    </div>
+
+    <!-- Right: command panel -->
+    <div class="r-command-pane">
+      <div class="r-cmd-list">
+        <div class="r-cmd-heading">COMMANDS</div>
+        <div class="r-cmd-divider"></div>
+        <div class="r-cmd-item"><span class="r-cmd-name">cat resume.txt</span></div>
+        <div class="r-cmd-item"><span class="r-cmd-name">cat resume.txt --experience</span></div>
+        <div class="r-cmd-item"><span class="r-cmd-name">cat resume.txt --skills</span></div>
+        <div class="r-cmd-item"><span class="r-cmd-name">cat resume.txt --education</span></div>
+        <div class="r-cmd-item"><span class="r-cmd-name">cat resume.txt --contact</span></div>
+        <div class="r-cmd-item"><span class="r-cmd-name">cat resume.txt --download</span></div>
+        <div class="r-cmd-item" style="margin-top:0.5rem"><span class="r-cmd-name">clear</span></div>
+        <div class="r-cmd-divider" style="margin-top:1rem"></div>
+        <div class="r-cmd-tip">type or copy-paste a command into the prompt below</div>
+      </div>
+      <div class="r-cmd-input-row" id="cmd-input-row">
+        <span class="r-prompt">$ </span>
+        <span class="r-input-display" id="cmd-display"></span><span class="r-cursor"></span>
+        <input id="cmd-input" class="r-input-hidden" type="text" autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+
+  </div>
 </div>
+
+<style>
+  .resume-terminal {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #0d1117;
+    overflow: hidden;
+  }
+
+  /* ── Chrome ── */
+  .r-chrome {
+    background: #2a2a2e;
+    padding: 0.65rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-bottom: 1px solid rgba(0,0,0,0.4);
+    flex-shrink: 0;
+  }
+
+  .r-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .r-title {
+    flex: 1;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.03em;
+    margin-right: 52px;
+  }
+
+  /* ── Panes ── */
+  .r-panes {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── Output pane (left) ── */
+  .r-output-pane {
+    flex: 0 0 70%;
+    overflow-y: auto;
+    padding: 2rem 2.5rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #e6edf3;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.25) transparent;
+  }
+
+  .r-output-pane::-webkit-scrollbar {
+    width: 6px;
+  }
+  .r-output-pane::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .r-output-pane::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.25);
+    border-radius: 3px;
+  }
+  .r-output-pane::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.45);
+  }
+
+  /* Output block — each command's response */
+  .r-output-pane :global(.out-block) {
+    margin-bottom: 2rem;
+    animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .r-output-pane :global(.out-prompt-line) {
+    color: #3fb950;
+    margin-bottom: 0.5rem;
+  }
+
+  .r-output-pane :global(.out-divider) {
+    color: rgba(255,255,255,0.15);
+    margin: 0.25rem 0;
+  }
+
+  .r-output-pane :global(.out-header) {
+    color: #3fb950;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.1rem;
+  }
+
+  .r-output-pane :global(.out-name) {
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .r-output-pane :global(.out-company) {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  .r-output-pane :global(.out-role) {
+    color: #7dd3fc;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .r-output-pane :global(.out-muted) {
+    color: rgba(255,255,255,0.4);
+  }
+
+  .r-output-pane :global(.out-hal) {
+    color: #f87171;
+  }
+
+  .r-output-pane :global(.out-hal-tag) {
+    color: #f87171;
+    font-weight: 700;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Command pane (right) ── */
+  .r-command-pane {
+    flex: 0 0 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem 1.25rem 1.25rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.88rem;
+  }
+
+  .r-cmd-heading {
+    color: rgba(255,255,255,0.25);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.5rem;
+  }
+
+  .r-cmd-divider {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 0.75rem;
+  }
+
+  .r-cmd-item {
+    margin-bottom: 0.55rem;
+  }
+
+  .r-cmd-name {
+    color: rgba(255,255,255,0.82);
+    font-size: 0.95rem;
+  }
+
+  .r-cmd-tip {
+    color: rgba(255,255,255,0.55);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    font-family: system-ui, sans-serif;
+  }
+
+  .r-cmd-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 1rem;
+  }
+
+  .r-prompt {
+    color: #3fb950;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .r-input-hidden {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+  }
+
+  .r-input-display {
+    color: #e6edf3;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1rem;
+    white-space: pre;
+  }
+
+  .r-cursor {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.1em;
+    background: #3fb950;
+    margin-left: 1px;
+    vertical-align: text-bottom;
+    animation: blink 0.75s step-end infinite;
+    flex-shrink: 0;
+  }
+
+  .r-output-pane :global(.out-row) {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+</style>
+
+<script>
+  const cmdInput   = document.getElementById('cmd-input') as HTMLInputElement;
+  const cmdDisplay = document.getElementById('cmd-display') as HTMLElement;
+  const cmdRow     = document.getElementById('cmd-input-row') as HTMLElement;
+  const output     = document.getElementById('resume-output') as HTMLElement;
+  const outputPane = output.parentElement as HTMLElement;
+
+  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+  // ── Content ──────────────────────────────────────────
+  const D  = '─'.repeat(54);
+  const DD = '━'.repeat(54);
+
+  function headerHTML() {
+    return `
+      <div class="out-muted">${DD}</div>
+      <div style="margin:0.4rem 0"><span class="out-name">BRUCE CHEN</span></div>
+      <div class="out-muted">Senior Software Engineer  ·  Boston, MA</div>
+      <div style="height:0.3rem"></div>
+      <div class="out-muted">brucewilliam1994@gmail.com</div>
+      <div class="out-muted">github.com/BruceWilliamChen  ·  linkedin.com/in/bruceschen</div>
+      <div class="out-muted">${DD}</div>
+      <div style="height:0.5rem"></div>
+      <div>Senior software engineer with 8+ years of experience in full-stack development, spanning UI, backend services architecture, software design patterns, and database design. Currently a Senior Software Engineer at MathWorks. In the era of AI, passionate about designing AI-assisted engineering workflows, figuring out where agents actually add value, building reusable agent skills, and pushing the agent-as-orchestrator model for real dev workflows.</div>
+    `;
+  }
+
+  function experienceHTML() {
+    return `
+      <div class="out-header">[EXPERIENCE]</div>
+      <div class="out-divider">${D}</div>
+      <div style="height:0.4rem"></div>
+      <div class="out-row"><span class="out-company">MathWorks</span><span class="out-muted">Oct 2022 – Present</span></div>
+      <div class="out-role">Senior Software Engineer, Simulink Test Team  ·  Natick, MA</div>
+      <div style="margin-bottom:0.35rem">· <span style="color:#e3b341;font-weight:700">[Current focus]</span> Researching and developing agentic workflows to bring AI agent-assisted support to Simulink Test, covering areas such as test interface understanding and requirement-based test authoring</div>
+      <div style="margin-bottom:0.35rem">· Built core workflows for the next-generation Simulink Test Manager V2, covering test inputs, parameter overrides, and data visualization</div>
+      <div>· Delivered end-to-end integration of ADAS/AV workflows (RoadRunner) into the Simulink Test V&amp;V pipeline</div>
+      <div style="height:1.25rem"></div>
+      <div class="out-row"><span class="out-company">Hippo Insurance</span><span class="out-muted">Nov 2021 – Sep 2022</span></div>
+      <div class="out-role">Software Engineer  ·  Palo Alto, CA</div>
+      <div style="margin-bottom:0.35rem">· Streamlined underwriting backend logic for the main customer-facing insurance quoting website</div>
+      <div>· Maintained internal tooling for state-specific home insurance regulation data</div>
+      <div style="height:1.25rem"></div>
+      <div class="out-row"><span class="out-company">MathWorks</span><span class="out-muted">Mar 2020 – Oct 2021</span></div>
+      <div class="out-role">Software Engineer, MATLAB Test Team  ·  Natick, MA</div>
+      <div style="margin-bottom:0.35rem">· Built customized test plugins enabling real-time retrieval of execution details across serial and parallel test runs</div>
+      <div>· Developed workflow tooling to help power users manage and scale large test suites</div>
+      <div style="height:1.25rem"></div>
+      <div class="out-row"><span class="out-company">Eli Lilly <span class="out-muted" style="font-weight:400;font-size:1rem">(via Onebridge)</span></span><span class="out-muted">Jul 2018 – Feb 2020</span></div>
+      <div class="out-role">Software Engineer, Contract  ·  San Diego, CA</div>
+      <div style="margin-bottom:0.35rem">· Contributed to an internal data management platform enabling automated data processing and transfer pipelines for internal scientists</div>
+      <div style="margin-bottom:0.35rem">· Optimized backend APIs for large-scale data throughput, including database schema design and indexing to support high-volume scientific datasets</div>
+      <div>· Built web-based visualizations for scientific data including molecule sequence analysis and alignment</div>
+    `;
+  }
+
+  function skillsHTML() {
+    return `
+      <div class="out-header">[SKILLS]</div>
+      <div class="out-divider">${D}</div>
+      <div style="height:0.4rem"></div>
+      <div style="margin-bottom:0.5rem"><span class="out-muted">Languages &amp; Frameworks  </span><span>C++  ·  JavaScript (Node.js)  ·  Java  ·  Python (Django)</span></div>
+      <div style="margin-bottom:0.5rem"><span class="out-muted">Databases               </span><span>PostgreSQL (schema design, optimization, indexing)</span></div>
+      <div style="margin-bottom:0.5rem"><span class="out-muted">AI &amp; Agentic Tooling    </span><span>Claude Code — skill design, meta-workflow scaffolding, agentic workflow architecture</span></div>
+      <div><span class="out-muted">Platforms               </span><span>Windows  ·  Linux</span></div>
+    `;
+  }
+
+  function educationHTML() {
+    return `
+      <div class="out-header">[EDUCATION]</div>
+      <div class="out-divider">${D}</div>
+      <div style="height:0.4rem"></div>
+      <div class="out-row"><span class="out-company">Brandeis University</span><span class="out-muted">Aug 2016 – May 2018</span></div>
+      <div class="out-role">M.S. Computer Science  ·  Waltham, MA</div>
+      <div style="margin-bottom:0.35rem">· Teaching Assistant, Data Structures &amp; Algorithms</div>
+      <div>· Database Administrator, Dr. Jytte Klausen's research lab</div>
+    `;
+  }
+
+  function contactHTML() {
+    return `
+      <div class="out-header">[CONTACT]</div>
+      <div class="out-divider">${D}</div>
+      <div class="out-row"><span class="out-muted">Email   </span><span>brucewilliam1994@gmail.com</span></div>
+      <div class="out-row"><span class="out-muted">GitHub  </span><span>github.com/BruceWilliamChen</span></div>
+      <div class="out-row"><span class="out-muted">LinkedIn</span><span>linkedin.com/in/bruceschen</span></div>
+      <div class="out-row"><span class="out-muted">Location</span><span>Boston, MA, USA</span></div>
+    `;
+  }
+
+  // ── Core helpers ─────────────────────────────────────
+  function appendOutput(html: string) {
+    const block = document.createElement('div');
+    block.className = 'out-block';
+    block.innerHTML = html;
+    output.appendChild(block);
+  }
+
+  function clearOutput() {
+    output.innerHTML = '';
+  }
+
+  function echoCommand(cmd: string) {
+    appendOutput(`<div class="out-prompt-line">$ ${cmd}</div>`);
+  }
+
+  // ── Command handler ───────────────────────────────────
+  async function handleCommand(cmd: string) {
+    const c = cmd.trim().toLowerCase();
+    if (c === '') return;
+    clearOutput();
+    echoCommand(cmd);
+
+    if (c === 'cat resume.txt') {
+      appendOutput(headerHTML());
+      await sleep(600); appendOutput(experienceHTML());
+      await sleep(600); appendOutput(skillsHTML());
+      await sleep(600); appendOutput(educationHTML());
+      await sleep(600); appendOutput(contactHTML());
+    } else if (c === 'cat resume.txt --experience') {
+      appendOutput(experienceHTML());
+    } else if (c === 'cat resume.txt --skills') {
+      appendOutput(skillsHTML());
+    } else if (c === 'cat resume.txt --education') {
+      appendOutput(educationHTML());
+    } else if (c === 'cat resume.txt --contact') {
+      appendOutput(contactHTML());
+    } else if (c === 'cat resume.txt --download') {
+      appendOutput(`<div class="out-hal"><span class="out-hal-tag">[HAL]:</span> Compiling dossier...</div>`);
+      await sleep(900);
+      appendOutput(`<div class="out-hal"><span class="out-hal-tag">[HAL]:</span> Downloading bruce_chen_resume.pdf</div>`);
+    } else if (c === 'clear') {
+      clearOutput();
+    } else {
+      appendOutput(`<div class="out-hal"><span class="out-hal-tag">[HAL]:</span> I'm sorry, that information is classified.</div>`);
+    }
+  }
+
+  // ── Intro — reruns every time Resume tab is activated ──
+  async function runResumeIntro() {
+    clearOutput();
+
+    const promptBlock = document.createElement('div');
+    promptBlock.className = 'out-block';
+    promptBlock.innerHTML = '<div class="out-prompt-line">$ <span id="intro-cmd"></span></div>';
+    output.appendChild(promptBlock);
+
+    const cmdSpan = document.getElementById('intro-cmd') as HTMLElement;
+    for (const ch of 'cat resume.txt') {
+      cmdSpan.textContent += ch;
+      await sleep(90 + Math.random() * 60);
+    }
+    await sleep(300);
+
+    appendOutput(headerHTML());
+    await sleep(600); appendOutput(experienceHTML());
+    await sleep(600); appendOutput(skillsHTML());
+    await sleep(600); appendOutput(educationHTML());
+    await sleep(600); appendOutput(contactHTML());
+    outputPane.scrollTop = 0;
+
+    cmdInput.focus();
+  }
+
+  (window as any).runResumeIntro = runResumeIntro;
+
+  // ── Input wiring ──────────────────────────────────────
+  const cmdHistory: string[] = [];
+  let historyIdx = 0;
+
+  cmdRow.addEventListener('click', () => cmdInput.focus());
+
+  cmdInput.addEventListener('input', () => {
+    cmdDisplay.textContent = cmdInput.value;
+  });
+
+  cmdInput.addEventListener('keydown', async (e) => {
+    if (e.key === 'Enter') {
+      const cmd = cmdInput.value;
+      cmdInput.value = '';
+      cmdDisplay.textContent = '';
+      if (cmd.trim()) { cmdHistory.push(cmd); historyIdx = cmdHistory.length; }
+      await handleCommand(cmd);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIdx > 0) {
+        historyIdx--;
+        cmdInput.value = cmdHistory[historyIdx];
+        cmdDisplay.textContent = cmdInput.value;
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIdx < cmdHistory.length - 1) {
+        historyIdx++;
+        cmdInput.value = cmdHistory[historyIdx];
+        cmdDisplay.textContent = cmdInput.value;
+      } else {
+        historyIdx = cmdHistory.length;
+        cmdInput.value = '';
+        cmdDisplay.textContent = '';
+      }
+    }
+  });
+</script>

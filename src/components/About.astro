@@ -1,5 +1,250 @@
-<div class="section-content">
-  <h2>About Me</h2>
-  <p>Welcome to my personal space. I'm a software engineer based in [City].
-  This is where I share my background, resume, photos, and writing.</p>
+<div class="about-terminal">
+
+  <!-- Chrome -->
+  <div class="a-chrome">
+    <span class="a-dot dot-r"></span>
+    <span class="a-dot dot-y"></span>
+    <span class="a-dot dot-g"></span>
+    <span class="a-title">bash — bchen@hal9000</span>
+  </div>
+
+  <!-- Output pane -->
+  <div class="a-output-pane">
+    <div id="about-output"></div>
+  </div>
+
 </div>
+
+<style>
+  .about-terminal {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #0d1117;
+    overflow: hidden;
+  }
+
+  /* ── Chrome ── */
+  .a-chrome {
+    background: #2a2a2e;
+    padding: 0.65rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-bottom: 1px solid rgba(0,0,0,0.4);
+    flex-shrink: 0;
+  }
+
+  .a-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .a-title {
+    flex: 1;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── Output pane ── */
+  .a-output-pane {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem 2.5rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #e6edf3;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.25) transparent;
+  }
+
+  .a-output-pane::-webkit-scrollbar { width: 6px; }
+  .a-output-pane::-webkit-scrollbar-track { background: transparent; }
+  .a-output-pane::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.25);
+    border-radius: 3px;
+  }
+  .a-output-pane::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.45);
+  }
+
+  .a-output-pane :global(.out-block) {
+    margin-bottom: 2rem;
+    animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .a-output-pane :global(.out-prompt-line) {
+    color: #3fb950;
+    margin-bottom: 0.5rem;
+  }
+
+  .a-output-pane :global(.out-header) {
+    color: #3fb950;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.1rem;
+  }
+
+  .a-output-pane :global(.out-divider) {
+    color: rgba(255,255,255,0.15);
+    margin: 0.25rem 0 0.6rem;
+  }
+
+  .a-output-pane :global(.out-muted) {
+    color: rgba(255,255,255,0.4);
+  }
+
+  .a-output-pane :global(.out-name) {
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  /* ── Cards ── */
+  .a-output-pane :global(.card-grid) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .a-output-pane :global(.card-grid-single) {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .a-output-pane :global(.card) {
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 4px;
+    padding: 0.85rem 1rem;
+  }
+
+  .a-output-pane :global(.card-title) {
+    color: #ffffff;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .a-output-pane :global(.card-body) {
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<script>
+  const output     = document.getElementById('about-output') as HTMLElement;
+  const outputPane = output.parentElement as HTMLElement;
+
+  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+  const D = '─'.repeat(54);
+
+  function appendOutput(html: string) {
+    const block = document.createElement('div');
+    block.className = 'out-block';
+    block.innerHTML = html;
+    output.appendChild(block);
+  }
+
+  function clearOutput() {
+    output.innerHTML = '';
+  }
+
+  function whoAmIHTML() {
+    return `
+      <div class="out-header">[WHO I AM]</div>
+      <div class="out-divider">${D}</div>
+      <div class="card-grid-single">
+        <div class="card">
+          <div class="card-title">👤 Identity</div>
+          <div class="card-body">Hi, I'm Bruce — software engineer, builder, perpetual tinkerer.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🤖 Right now</div>
+          <div class="card-body">Deep in the AI wave — not just using it, but thinking hard about how agents can reshape the way engineers work. If a tool can amplify what I can build, I want to understand it inside out.</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function outsideWorkHTML() {
+    return `
+      <div class="out-header">[OUTSIDE OF WORK]</div>
+      <div class="out-divider">${D}</div>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">🏊 Swimming</div>
+          <div class="card-body">Regular laps. Best way to clear the head.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🎬 Movies</div>
+          <div class="card-body">Chronic moviegoer. Big screen whenever possible.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">✍️ Writing</div>
+          <div class="card-body">Novels, just for myself. No agenda, no readers required.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🫧 Perfumery</div>
+          <div class="card-body">Sizeable collection. Quietly dreaming of professional perfumer training someday.</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function thisSiteHTML() {
+    return `
+      <div class="out-header">[THIS SITE]</div>
+      <div class="out-divider">${D}</div>
+      <div class="card-grid-single">
+        <div class="card">
+          <div class="card-title">🏠 This Space</div>
+          <div class="card-body">My corner of the internet. Built it because I wanted a space that felt like me, not a template.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">📝 The Blog</div>
+          <div class="card-body">Where I think out loud — no fixed theme, no schedule. Could be a deep dive into AI agents, a fragrance review, notes on a novel I'm reading. Whatever's worth writing down.</div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function runAboutIntro() {
+    clearOutput();
+
+    const promptBlock = document.createElement('div');
+    promptBlock.className = 'out-block';
+    promptBlock.innerHTML = '<div class="out-prompt-line">$ <span id="about-intro-cmd"></span></div>';
+    output.appendChild(promptBlock);
+
+    const cmdSpan = document.getElementById('about-intro-cmd') as HTMLElement;
+    for (const ch of 'cat about.txt') {
+      cmdSpan.textContent += ch;
+      await sleep(90 + Math.random() * 60);
+    }
+    await sleep(300);
+
+    appendOutput(whoAmIHTML());
+    await sleep(600); appendOutput(outsideWorkHTML());
+    await sleep(600); appendOutput(thisSiteHTML());
+  }
+
+  (window as any).runAboutIntro = runAboutIntro;
+</script>
