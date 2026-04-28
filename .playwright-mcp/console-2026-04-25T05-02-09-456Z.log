@@ -1,0 +1,5 @@
+[  808501ms] TypeError: Cannot read properties of null (reading 'classList')
+    at http://localhost:4322/src/pages/index.astro?astro&type=script&index=0&lang.ts:28:8
+[ 2218401ms] TypeError: Cannot set properties of null (setting 'textContent')
+    at runTypewriter (http://localhost:4322/src/pages/index.astro?astro&type=script&index=0&lang.ts:9:22)
+    at http://localhost:4322/src/pages/index.astro?astro&type=script&index=0&lang.ts:66:1

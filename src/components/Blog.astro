@@ -1,4 +1,413 @@
-<div class="section-content">
-  <h2>Blog</h2>
-  <p>Coming soon.</p>
+---
+import { getCollection, render } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const posts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const renderedPosts = await Promise.all(
+  posts.map(async (post) => {
+    const { Content } = await render(post);
+    return { post, Content };
+  })
+);
+
+function formatDate(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+---
+
+<div class="blog-terminal">
+
+  <!-- List view -->
+  <div id="blog-list-view">
+    <div class="b-chrome">
+      <span class="b-dot dot-r"></span>
+      <span class="b-dot dot-y"></span>
+      <span class="b-dot dot-g"></span>
+      <span class="b-title">bash — bchen@hal9000</span>
+    </div>
+    <div class="b-output-pane">
+      <div id="blog-output"></div>
+      <div id="blog-rows" style="display:none">
+        {posts.map((post) => (
+          <div class="post-row" data-slug={post.id}>
+            <span class="post-date">{formatDate(post.data.date)}</span>
+            <span class="post-title">{post.data.title}</span>
+            <span class="post-arrow">→</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Post view -->
+  <div id="blog-post-view" style="display:none">
+    <div class="b-post-header">
+      <div class="b-back-wrapper">
+        <button class="b-back-btn" id="blog-back-btn"><span class="b-back-prompt">$</span> cd ..<span class="b-back-cursor">█</span></button>
+        <div class="b-hal-tip">
+          <div class="b-tip-arrow"></div>
+          <div class="b-tip-bubble"><span class="b-tip-hal">[HAL]:</span> click to execute · returns to menu</div>
+        </div>
+      </div>
+    </div>
+    <div class="b-post-pane">
+      {renderedPosts.map(({ post, Content }) => (
+        <div class="post-content" data-slug={post.id} style="display:none">
+          <div class="post-meta">
+            <h1 class="post-heading">{post.data.title}</h1>
+            <div class="post-date-line">{formatDate(post.data.date)}</div>
+          </div>
+          <div class="post-body">
+            <Content />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
 </div>
+
+<style>
+  .blog-terminal {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #0d1117;
+    overflow: hidden;
+  }
+
+  /* ── List view ── */
+  #blog-list-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .b-chrome {
+    background: #2a2a2e;
+    padding: 0.65rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-bottom: 1px solid rgba(0,0,0,0.4);
+    flex-shrink: 0;
+  }
+
+  .b-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .b-title {
+    flex: 1;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.03em;
+  }
+
+  .b-output-pane {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem 2.5rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #e6edf3;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.25) transparent;
+  }
+
+  :global(.out-block) {
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.out-prompt-line) {
+    color: #3fb950;
+    margin-bottom: 0.5rem;
+  }
+
+  /* ── Post rows ── */
+  #blog-rows {
+    margin-top: 0.5rem;
+  }
+
+  .post-row {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .post-row:hover {
+    background: rgba(63,185,80,0.08);
+  }
+  .post-row:hover .post-title,
+  .post-row:hover .post-arrow {
+    color: #3fb950;
+  }
+
+  .post-date {
+    color: rgba(255,255,255,0.35);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    width: 7rem;
+  }
+
+  .post-title {
+    color: #e6edf3;
+    flex: 1;
+    transition: color 0.1s;
+  }
+
+  .post-arrow {
+    color: rgba(255,255,255,0.25);
+    transition: color 0.1s;
+  }
+
+  /* ── Post view ── */
+  #blog-post-view {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .b-post-header {
+    padding: 1rem 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+
+  .b-back-btn {
+    background: transparent;
+    border: none;
+    color: #e6edf3;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    opacity: 0.85;
+    transform-origin: left center;
+    transition: opacity 0.15s, transform 0.15s, text-shadow 0.15s;
+  }
+  .b-back-prompt {
+    color: #3fb950;
+    margin-right: 0.4rem;
+  }
+  .b-back-btn:hover {
+    opacity: 1;
+    transform: scale(1.28);
+    text-shadow: 0 0 10px rgba(63,185,80,0.7), 0 0 25px rgba(63,185,80,0.35), 0 0 45px rgba(63,185,80,0.15);
+  }
+  .b-back-btn:active {
+    transform: scale(0.96);
+    transition-duration: 0.08s;
+  }
+
+  .b-back-wrapper {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .b-back-cursor {
+    color: #3fb950;
+    margin-left: 2px;
+    animation: blink 0.75s step-end infinite;
+  }
+
+  .b-hal-tip {
+    margin-top: 0.4rem;
+    display: inline-flex;
+    flex-direction: column;
+    animation: breathe 3.5s ease-in-out infinite;
+    transform-origin: top left;
+  }
+
+  .b-tip-arrow {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid rgba(248,113,113,0.3);
+    margin-left: 1.4rem;
+  }
+
+  .b-tip-bubble {
+    background: #1e1e22;
+    border: 1px solid rgba(248,113,113,0.3);
+    border-radius: 6px;
+    padding: 0.45rem 1rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.7);
+    white-space: nowrap;
+  }
+
+  .b-tip-hal {
+    color: #f87171;
+    font-weight: 700;
+    margin-right: 0.4rem;
+  }
+
+  @keyframes breathe {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50%       { opacity: 0.9;  transform: scale(1.04); }
+  }
+
+  .b-post-pane {
+    flex: 1;
+    overflow-y: auto;
+    padding: 3rem 2rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.25) transparent;
+  }
+
+  .post-content {
+    max-width: 900px;
+    margin: 0 auto;
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .post-meta {
+    margin-bottom: 2.5rem;
+  }
+
+  .post-heading {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #e6edf3;
+    margin: 0 0 0.5rem;
+    line-height: 1.25;
+  }
+
+  .post-date-line {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .post-body {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.82);
+  }
+
+  .post-body :global(h2) {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #e6edf3;
+    margin: 3rem 0 1rem;
+  }
+
+  .post-body :global(p) {
+    margin: 0 0 1.2rem;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<script>
+  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+  const listView   = document.getElementById('blog-list-view') as HTMLElement;
+  const postView   = document.getElementById('blog-post-view') as HTMLElement;
+  const blogRows   = document.getElementById('blog-rows') as HTMLElement;
+  const blogOutput = document.getElementById('blog-output') as HTMLElement;
+  const backBtn    = document.getElementById('blog-back-btn') as HTMLElement;
+
+  function showList(updateHash = true) {
+    postView.style.display = 'none';
+    listView.style.display = 'flex';
+    if (updateHash) history.pushState(null, '', '#blog');
+    runBlogIntro();
+  }
+
+  function showPost(slug: string, updateHash = true) {
+    listView.style.display = 'none';
+    document.querySelectorAll('.post-content').forEach(el => {
+      (el as HTMLElement).style.display = 'none';
+    });
+    const target = document.querySelector(`.post-content[data-slug="${slug}"]`) as HTMLElement;
+    if (target) target.style.display = 'block';
+    postView.style.display = 'flex';
+    if (updateHash) history.pushState(null, '', '#blog/' + slug.replace(/\.md$/, ''));
+  }
+
+  function checkBlogHash(): boolean {
+    const hash = window.location.hash;
+    if (hash.startsWith('#blog/')) {
+      const slugPart = hash.slice(6);
+      const el = document.querySelector(`.post-content[data-slug="${slugPart}.md"]`) as HTMLElement | null;
+      if (el) {
+        showPost(el.dataset.slug!, false);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  window.addEventListener('popstate', () => {
+    const hash = window.location.hash;
+    if (hash.startsWith('#blog/')) {
+      checkBlogHash();
+    } else if (hash === '#blog' || hash === '') {
+      postView.style.display = 'none';
+      listView.style.display = 'flex';
+      runBlogIntro();
+    }
+  });
+
+  async function runBlogIntro() {
+    blogRows.style.display = 'none';
+    blogOutput.innerHTML = '';
+
+    const promptBlock = document.createElement('div');
+    promptBlock.className = 'out-block';
+    promptBlock.innerHTML = '<div class="out-prompt-line">$ <span id="blog-intro-cmd"></span></div>';
+    blogOutput.appendChild(promptBlock);
+
+    const cmdSpan = document.getElementById('blog-intro-cmd') as HTMLElement;
+    for (const ch of 'ls posts/') {
+      cmdSpan.textContent += ch;
+      await sleep(80 + Math.random() * 55);
+    }
+    await sleep(300);
+
+    blogRows.style.display = 'block';
+    const rows = blogRows.querySelectorAll<HTMLElement>('.post-row');
+    rows.forEach((row, i) => {
+      row.style.animationDelay = `${i * 80}ms`;
+    });
+  }
+
+  backBtn.addEventListener('click', () => showList(true));
+
+  document.querySelectorAll<HTMLElement>('.post-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const slug = row.dataset.slug!;
+      showPost(slug, true);
+    });
+  });
+
+  (window as any).runBlogIntro = runBlogIntro;
+  (window as any).checkBlogHash = checkBlogHash;
+</script>

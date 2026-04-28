@@ -1,0 +1,29 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - heading "Bruce Chen" [level=1] [ref=e5]
+        - paragraph [ref=e6]: Software Engineer
+      - paragraph [ref=e8]: Welcome to my personal space. I'm a software engineer based in [City]. This is where I share my background, resume, photos, and writing.
+    - navigation [ref=e9]:
+      - link "About" [ref=e10] [cursor=pointer]:
+        - /url: /WhoIsBruce/
+      - link "Resume" [ref=e11] [cursor=pointer]:
+        - /url: /WhoIsBruce/resume
+      - link "Photos" [ref=e12] [cursor=pointer]:
+        - /url: /WhoIsBruce/photos
+      - link "Blog" [ref=e13] [cursor=pointer]:
+        - /url: /WhoIsBruce/blog
+  - generic [ref=e16]:
+    - button "Menu" [ref=e17]:
+      - img [ref=e19]
+      - generic: Menu
+    - button "Inspect" [ref=e23]:
+      - img [ref=e25]
+      - generic: Inspect
+    - button "Audit" [ref=e27]:
+      - img [ref=e29]
+      - generic: Audit
+    - button "Settings" [ref=e32]:
+      - img [ref=e34]
+      - generic: Settings

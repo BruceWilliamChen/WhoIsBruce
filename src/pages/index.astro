@@ -192,28 +192,33 @@ const tabs = [
   }
 
   .tab-btn {
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.13);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
     border-bottom: none;
+    border-top: 2px solid transparent;
     border-radius: 6px 6px 0 0;
-    color: rgba(255,255,255,0.5);
-    font-family: system-ui, -apple-system, sans-serif;
-    font-size: 0.85rem;
-    font-weight: 500;
-    letter-spacing: 0.01em;
+    color: rgba(255,255,255,0.38);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
     padding: 0 1.8rem;
     height: 38px;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
   }
   .tab-btn:hover {
-    background: rgba(255,255,255,0.12);
-    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.9);
+    border-color: rgba(255,255,255,0.18);
   }
   .tab-btn.active {
-    background: #3a3a3e;
-    color: #fff;
-    border-color: rgba(255,255,255,0.2);
+    background: #2e2e32;
+    color: #3fb950;
+    border-color: rgba(255,255,255,0.12);
+    border-top-color: rgba(255,255,255,0.12);
+    text-shadow: 0 0 8px rgba(63,185,80,0.6), 0 0 20px rgba(63,185,80,0.25);
   }
 
   /* ── Pages ── */
@@ -518,6 +523,21 @@ const tabs = [
       transitionTo(target);
       if (target === 'resume') (window as any).runResumeIntro?.();
       if (target === 'about')  (window as any).runAboutIntro?.();
+      if (target === 'blog')   (window as any).runBlogIntro?.();
     });
   });
+
+  // Handle direct hash links (e.g. shared LinkedIn URLs)
+  const initHash = window.location.hash;
+  if (initHash.startsWith('#blog')) {
+    tabBtns.forEach(b => b.classList.remove('active'));
+    document.querySelector<HTMLElement>('[data-section="blog"]')?.classList.add('active');
+    document.getElementById('page-cover')?.classList.remove('active');
+    document.getElementById('page-blog')?.classList.add('active');
+    current = 'blog';
+    setTimeout(() => {
+      if (initHash.startsWith('#blog/')) (window as any).checkBlogHash?.();
+      else (window as any).runBlogIntro?.();
+    }, 50);
+  }
 </script>

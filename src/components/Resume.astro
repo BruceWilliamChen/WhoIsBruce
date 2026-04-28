@@ -21,13 +21,20 @@
       <div class="r-cmd-list">
         <div class="r-cmd-heading">COMMANDS</div>
         <div class="r-cmd-divider"></div>
+
+        <div class="r-cmd-section">VIEW</div>
         <div class="r-cmd-item"><span class="r-cmd-name">cat resume.txt</span></div>
         <div class="r-cmd-item"><span class="r-cmd-name">cat resume.txt --experience</span></div>
         <div class="r-cmd-item"><span class="r-cmd-name">cat resume.txt --skills</span></div>
         <div class="r-cmd-item"><span class="r-cmd-name">cat resume.txt --education</span></div>
         <div class="r-cmd-item"><span class="r-cmd-name">cat resume.txt --contact</span></div>
-        <div class="r-cmd-item"><span class="r-cmd-name">cat resume.txt --download</span></div>
-        <div class="r-cmd-item" style="margin-top:0.5rem"><span class="r-cmd-name">clear</span></div>
+        <div class="r-cmd-item" style="margin-top:0.35rem"><span class="r-cmd-name">clear</span></div>
+
+        <div class="r-cmd-divider" style="margin-top:1rem"></div>
+
+        <div class="r-cmd-section">EXPORT</div>
+        <div class="r-cmd-item"><span class="r-cmd-name">download resume.pdf</span></div>
+
         <div class="r-cmd-divider" style="margin-top:1rem"></div>
         <div class="r-cmd-tip">type or copy-paste a command into the prompt below</div>
       </div>
@@ -95,7 +102,7 @@
     overflow-y: auto;
     padding: 2rem 2.5rem;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 1rem;
+    font-size: 1.1rem;
     line-height: 1.8;
     color: #e6edf3;
     border-right: 1px solid rgba(255,255,255,0.06);
@@ -195,6 +202,13 @@
     margin-bottom: 0.5rem;
   }
 
+  .r-cmd-section {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.4rem;
+  }
+
   .r-cmd-divider {
     border-top: 1px solid rgba(255,255,255,0.08);
     margin-bottom: 0.75rem;
@@ -205,7 +219,7 @@
   }
 
   .r-cmd-name {
-    color: rgba(255,255,255,0.82);
+    color: #3fb950;
     font-size: 0.95rem;
   }
 
@@ -391,10 +405,17 @@
       appendOutput(educationHTML());
     } else if (c === 'cat resume.txt --contact') {
       appendOutput(contactHTML());
-    } else if (c === 'cat resume.txt --download') {
+    } else if (c === 'download resume.pdf') {
       appendOutput(`<div class="out-hal"><span class="out-hal-tag">[HAL]:</span> Compiling dossier...</div>`);
       await sleep(900);
-      appendOutput(`<div class="out-hal"><span class="out-hal-tag">[HAL]:</span> Downloading bruce_chen_resume.pdf</div>`);
+      appendOutput(`<div class="out-hal"><span class="out-hal-tag">[HAL]:</span> Initiating transfer — bruce_chen_resume.pdf</div>`);
+      await sleep(700);
+      const a = document.createElement('a');
+      a.href = '/WhoIsBruce/bruce_chen_resume.pdf';
+      a.download = 'bruce_chen_resume.pdf';
+      a.click();
+      await sleep(400);
+      appendOutput(`<div class="out-hal"><span class="out-hal-tag">[HAL]:</span> Transfer complete.</div>`);
     } else if (c === 'clear') {
       clearOutput();
     } else {

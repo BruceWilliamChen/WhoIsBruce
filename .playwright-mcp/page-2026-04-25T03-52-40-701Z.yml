@@ -1,0 +1,267 @@
+- generic [ref=e2]:
+  - region
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner "Global Navigation Menu" [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]:
+          - button "Open menu" [ref=e12] [cursor=pointer]:
+            - img [ref=e13]
+          - link "Homepage (g then d)" [ref=e15] [cursor=pointer]:
+            - /url: /
+            - img [ref=e16]
+        - generic [ref=e18]:
+          - navigation "Breadcrumbs" [ref=e19]:
+            - list [ref=e20]:
+              - listitem [ref=e21]:
+                - link "BruceWilliamChen" [ref=e22] [cursor=pointer]:
+                  - /url: /BruceWilliamChen
+                  - generic [ref=e23]: BruceWilliamChen
+              - listitem [ref=e24]:
+                - link "WhoIsBruce" [ref=e25] [cursor=pointer]:
+                  - /url: /BruceWilliamChen/WhoIsBruce
+                  - generic [ref=e26]: WhoIsBruce
+          - button "Search or jump to…" [ref=e29] [cursor=pointer]:
+            - generic [ref=e30]:
+              - generic:
+                - img
+              - generic [ref=e31]:
+                - generic:
+                  - text: Type
+                  - generic: /
+                  - text: to search
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e36]:
+              - link "Chat with Copilot" [ref=e38] [cursor=pointer]:
+                - /url: /copilot
+                - img [ref=e39]
+              - button "Open Copilot…" [ref=e43] [cursor=pointer]:
+                - generic:
+                  - img
+            - button "Create new..." [ref=e45] [cursor=pointer]:
+              - generic [ref=e46]:
+                - generic:
+                  - img
+              - generic:
+                - img
+            - generic [ref=e47]:
+              - link "Issues" [ref=e48] [cursor=pointer]:
+                - /url: /issues
+                - img [ref=e49]
+              - link "Pull requests" [ref=e52] [cursor=pointer]:
+                - /url: /pulls
+                - img [ref=e53]
+              - link "Repositories" [ref=e55] [cursor=pointer]:
+                - /url: /repos
+                - img [ref=e56]
+          - link "You have no unread notifications (g then n)" [ref=e58] [cursor=pointer]:
+            - /url: /notifications
+            - img [ref=e59]
+          - button "Open user navigation menu" [ref=e62] [cursor=pointer]:
+            - img "Bruce Chen" [ref=e63]
+      - heading "Repository navigation" [level=2] [ref=e64]
+      - navigation "Repository" [ref=e65]:
+        - list [ref=e66]:
+          - listitem [ref=e67]:
+            - link "Code" [ref=e68] [cursor=pointer]:
+              - /url: /BruceWilliamChen/WhoIsBruce
+              - img [ref=e70]
+              - generic [ref=e72]: Code
+          - listitem [ref=e73]:
+            - link "Issues" [ref=e74] [cursor=pointer]:
+              - /url: /BruceWilliamChen/WhoIsBruce/issues
+              - img [ref=e76]
+              - generic [ref=e79]: Issues
+          - listitem [ref=e80]:
+            - link "Pull requests" [ref=e81] [cursor=pointer]:
+              - /url: /BruceWilliamChen/WhoIsBruce/pulls
+              - img [ref=e83]
+              - generic [ref=e85]: Pull requests
+          - listitem [ref=e86]:
+            - link "Actions" [ref=e87] [cursor=pointer]:
+              - /url: /BruceWilliamChen/WhoIsBruce/actions
+              - img [ref=e89]
+              - generic [ref=e91]: Actions
+          - listitem [ref=e92]:
+            - link "Projects" [ref=e93] [cursor=pointer]:
+              - /url: /BruceWilliamChen/WhoIsBruce/projects
+              - img [ref=e95]
+              - generic [ref=e97]: Projects
+          - listitem [ref=e98]:
+            - link "Wiki" [ref=e99] [cursor=pointer]:
+              - /url: /BruceWilliamChen/WhoIsBruce/wiki
+              - img [ref=e101]
+              - generic [ref=e103]: Wiki
+          - listitem [ref=e104]:
+            - link "Security and quality" [ref=e105] [cursor=pointer]:
+              - /url: /BruceWilliamChen/WhoIsBruce/security
+              - img [ref=e107]
+              - generic [ref=e109]: Security and quality
+          - listitem [ref=e110]:
+            - link "Insights" [ref=e111] [cursor=pointer]:
+              - /url: /BruceWilliamChen/WhoIsBruce/pulse
+              - img [ref=e113]
+              - generic [ref=e115]: Insights
+          - listitem [ref=e116]:
+            - link "Settings" [ref=e117] [cursor=pointer]:
+              - /url: /BruceWilliamChen/WhoIsBruce/settings
+              - img [ref=e119]
+              - generic [ref=e121]: Settings
+  - main [ref=e125]:
+    - generic [ref=e127]:
+      - 'heading "Actions: BruceWilliamChen/WhoIsBruce" [level=1] [ref=e128]'
+      - generic [ref=e131]:
+        - generic [ref=e132]:
+          - generic [ref=e133]:
+            - heading "Actions" [level=2] [ref=e134]
+            - link "New workflow" [ref=e135] [cursor=pointer]:
+              - /url: /BruceWilliamChen/WhoIsBruce/actions/new
+              - generic [ref=e137]: New workflow
+          - navigation "Actions Workflows" [ref=e141]:
+            - list [ref=e143]:
+              - listitem [ref=e144]:
+                - link "All workflows" [ref=e145] [cursor=pointer]:
+                  - /url: /BruceWilliamChen/WhoIsBruce/actions
+                  - generic [ref=e146]: All workflows
+              - listitem [ref=e147]
+              - listitem [ref=e148]:
+                - list "Workflows" [ref=e152]:
+                  - listitem [ref=e153]:
+                    - link "Deploy to GitHub Pages" [ref=e154] [cursor=pointer]:
+                      - /url: /BruceWilliamChen/WhoIsBruce/actions/workflows/deploy.yml
+                      - generic [ref=e155]: Deploy to GitHub Pages
+                    - button "Pin Deploy to GitHub Pages" [ref=e156] [cursor=pointer]:
+                      - img
+              - listitem [ref=e157]
+              - listitem [ref=e158]:
+                - generic [ref=e161]:
+                  - heading "Management" [level=3] [ref=e163]
+                  - list "Management" [ref=e164]:
+                    - listitem [ref=e165]:
+                      - link "Caches" [ref=e166] [cursor=pointer]:
+                        - /url: /BruceWilliamChen/WhoIsBruce/actions/caches
+                        - generic:
+                          - img
+                        - generic [ref=e167]: Caches
+                    - listitem [ref=e168]:
+                      - link "Attestations" [ref=e169] [cursor=pointer]:
+                        - /url: /BruceWilliamChen/WhoIsBruce/attestations
+                        - generic:
+                          - img
+                        - generic [ref=e170]: Attestations
+                        - generic:
+                          - img
+                    - listitem [ref=e171]:
+                      - link "Runners" [ref=e172] [cursor=pointer]:
+                        - /url: /BruceWilliamChen/WhoIsBruce/actions/runners
+                        - generic:
+                          - img
+                        - generic [ref=e173]: Runners
+                    - listitem [ref=e174]:
+                      - link "Usage metrics" [ref=e175] [cursor=pointer]:
+                        - /url: /BruceWilliamChen/WhoIsBruce/actions/metrics/usage
+                        - generic:
+                          - img
+                        - generic [ref=e176]: Usage metrics
+                        - generic:
+                          - img
+                    - listitem [ref=e177]:
+                      - link "Performance metrics" [ref=e178] [cursor=pointer]:
+                        - /url: /BruceWilliamChen/WhoIsBruce/actions/metrics/performance
+                        - generic:
+                          - img
+                        - generic [ref=e179]: Performance metrics
+                        - generic:
+                          - img
+        - generic [ref=e182]:
+          - generic [ref=e183]:
+            - generic [ref=e184]:
+              - heading "All workflows" [level=2] [ref=e186]:
+                - generic [ref=e188]: All workflows
+              - search [ref=e192]:
+                - combobox "Filter workflow runs" [ref=e193]
+                - img
+            - generic [ref=e194]: Showing runs from all workflows
+          - generic [ref=e195]:
+            - generic [ref=e196]:
+              - strong [ref=e199]: 2 workflow runs
+              - generic [ref=e200]:
+                - button "Workflow" [ref=e204] [cursor=pointer]:
+                  - generic [ref=e206]: Workflow
+                  - generic:
+                    - img
+                - button "Event" [ref=e210] [cursor=pointer]:
+                  - generic [ref=e212]: Event
+                  - generic:
+                    - img
+                - button "Status" [ref=e216] [cursor=pointer]:
+                  - generic [ref=e218]: Status
+                  - generic:
+                    - img
+                - button "Branch" [ref=e222] [cursor=pointer]:
+                  - generic [ref=e224]: Branch
+                  - generic:
+                    - img
+                - button "Actor" [ref=e228] [cursor=pointer]:
+                  - generic [ref=e230]: Actor
+                  - generic:
+                    - img
+            - generic [ref=e231]:
+              - generic [ref=e233]:
+                - generic [ref=e234]:
+                  - 'link "queued: Run 2 of Deploy to GitHub Pages. Fix GitHub Actions build: upgrade Node.js to 22 for Astro 6" [ref=e235] [cursor=pointer]':
+                    - /url: /BruceWilliamChen/WhoIsBruce/actions/runs/24921941897
+                    - img "queued:" [ref=e237]
+                    - generic [ref=e239]: "Fix GitHub Actions build: upgrade Node.js to 22 for Astro 6"
+                  - generic [ref=e240]:
+                    - text: "Deploy to GitHub Pages #2:"
+                    - generic [ref=e241]:
+                      - text: Commit
+                      - link "1f85ed9" [ref=e242] [cursor=pointer]:
+                        - /url: /BruceWilliamChen/WhoIsBruce/commit/1f85ed95801eafa145547b7cfd0d39b39d3e8ff2
+                      - text: pushed by
+                      - link "BruceWilliamChen" [ref=e243] [cursor=pointer]:
+                        - /url: /BruceWilliamChen
+                - link "main" [ref=e245] [cursor=pointer]:
+                  - /url: /BruceWilliamChen/WhoIsBruce/tree/refs/heads/main
+                - generic [ref=e247]:
+                  - generic [ref=e248]:
+                    - generic [ref=e249]:
+                      - img [ref=e251]
+                      - generic "Apr 24, 2026, 11:52 PM EDT" [ref=e253]: now
+                    - generic [ref=e254]:
+                      - img [ref=e255]
+                      - text: Queued
+                  - group [ref=e258]:
+                    - generic "Show options" [ref=e259] [cursor=pointer]:
+                      - img "Show options" [ref=e260]
+              - generic [ref=e263]:
+                - generic [ref=e264]:
+                  - 'link "failed: Run 1 of Deploy to GitHub Pages. Initial Astro site scaffold with GitHub Pages deployment" [ref=e265] [cursor=pointer]':
+                    - /url: /BruceWilliamChen/WhoIsBruce/actions/runs/24921590467
+                    - img "failed:" [ref=e267]
+                    - generic [ref=e269]: Initial Astro site scaffold with GitHub Pages deployment
+                  - generic [ref=e270]:
+                    - text: "Deploy to GitHub Pages #1:"
+                    - generic [ref=e271]:
+                      - text: Commit
+                      - link "624529b" [ref=e272] [cursor=pointer]:
+                        - /url: /BruceWilliamChen/WhoIsBruce/commit/624529b3c34e91ede24e0729950a5ad4ae74b11d
+                      - text: pushed by
+                      - link "BruceWilliamChen" [ref=e273] [cursor=pointer]:
+                        - /url: /BruceWilliamChen
+                - link "main" [ref=e275] [cursor=pointer]:
+                  - /url: /BruceWilliamChen/WhoIsBruce/tree/refs/heads/main
+                - generic [ref=e277]:
+                  - generic [ref=e278]:
+                    - generic [ref=e279]:
+                      - img [ref=e281]
+                      - generic "Apr 24, 2026, 11:32 PM EDT" [ref=e283]: 20 minutes ago
+                    - generic [ref=e284]:
+                      - img "Run duration" [ref=e285]
+                      - text: 14s
+                  - group [ref=e288]:
+                    - generic "Show options" [ref=e289] [cursor=pointer]:
+                      - img "Show options" [ref=e290]

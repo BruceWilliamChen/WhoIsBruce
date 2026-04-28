@@ -1,0 +1,29 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - button "BC" [ref=e5] [cursor=pointer]
+      - navigation [ref=e6]:
+        - button "Cover" [ref=e7] [cursor=pointer]: Cover
+        - button "About" [ref=e9] [cursor=pointer]: About
+        - button "Resume" [ref=e11] [cursor=pointer]: Resume
+        - button "Photos" [ref=e13] [cursor=pointer]: Photos
+        - button "Blog" [ref=e15] [cursor=pointer]: Blog
+    - generic [ref=e21]:
+      - paragraph [ref=e22]: Personal Space
+      - heading "Bruce Chen" [level=1] [ref=e23]:
+        - text: Bruce
+        - text: Chen
+      - paragraph [ref=e24]: Select a chapter →
+  - generic [ref=e27]:
+    - button "Menu" [ref=e28]:
+      - img [ref=e30]
+      - generic: Menu
+    - button "Inspect" [ref=e34]:
+      - img [ref=e36]
+      - generic: Inspect
+    - button "Audit" [ref=e38]:
+      - img [ref=e40]
+      - generic: Audit
+    - button "Settings" [ref=e43]:
+      - img [ref=e45]
+      - generic: Settings
