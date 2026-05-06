@@ -42,6 +42,12 @@ function formatDate(date: Date) {
 
   <!-- Post view -->
   <div id="blog-post-view" style="display:none">
+    <div class="b-chrome">
+      <span class="b-dot dot-r"></span>
+      <span class="b-dot dot-y"></span>
+      <span class="b-dot dot-g"></span>
+      <span class="b-title">bash — bchen@hal9000</span>
+    </div>
     <div class="b-post-header">
       <div class="b-back-wrapper">
         <button class="b-back-btn" id="blog-back-btn"><span class="b-back-prompt">$</span> cd ..<span class="b-back-cursor">█</span></button>
@@ -349,14 +355,14 @@ function formatDate(date: Date) {
     const target = document.querySelector(`.post-content[data-slug="${slug}"]`) as HTMLElement;
     if (target) target.style.display = 'block';
     postView.style.display = 'flex';
-    if (updateHash) history.pushState(null, '', '#blog/' + slug.replace(/\.md$/, ''));
+    if (updateHash) history.pushState(null, '', '#blog/' + slug);
   }
 
   function checkBlogHash(): boolean {
     const hash = window.location.hash;
     if (hash.startsWith('#blog/')) {
       const slugPart = hash.slice(6);
-      const el = document.querySelector(`.post-content[data-slug="${slugPart}.md"]`) as HTMLElement | null;
+      const el = document.querySelector(`.post-content[data-slug="${slugPart}"]`) as HTMLElement | null;
       if (el) {
         showPost(el.dataset.slug!, false);
         return true;
@@ -377,6 +383,8 @@ function formatDate(date: Date) {
   });
 
   async function runBlogIntro() {
+    postView.style.display = 'none';
+    listView.style.display = 'flex';
     blogRows.style.display = 'none';
     blogOutput.innerHTML = '';
 
@@ -410,4 +418,11 @@ function formatDate(date: Date) {
 
   (window as any).runBlogIntro = runBlogIntro;
   (window as any).checkBlogHash = checkBlogHash;
+
+  // Self-init from hash on direct load (e.g. shared link)
+  if (window.location.hash.startsWith('#blog/')) {
+    checkBlogHash();
+  } else if (window.location.hash === '#blog') {
+    runBlogIntro();
+  }
 </script>

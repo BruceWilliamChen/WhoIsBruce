@@ -389,6 +389,22 @@ const tabs = [
   const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
   let twToken = 0;
 
+  /* ── Hash routing helpers ── */
+  const HASH_TO_TAB: Record<string, string> = {
+    '': 'cover', '#': 'cover',
+    '#about': 'about', '#resume': 'resume',
+    '#blog': 'blog', '#photos': 'photos',
+  };
+
+  function tabFromHash(hash: string): string {
+    if (hash.startsWith('#blog/')) return 'blog';
+    return HASH_TO_TAB[hash] ?? 'cover';
+  }
+
+  function hashForTab(tab: string): string {
+    return tab === 'cover' ? '' : '#' + tab;
+  }
+
   async function runTypewriter() {
     const token = ++twToken;
 
@@ -491,6 +507,9 @@ const tabs = [
   let animating = false;
 
   document.getElementById('btn-cover')?.addEventListener('click', () => {
+    if (current !== 'cover') {
+      history.pushState(null, '', window.location.pathname);
+    }
     transitionTo('cover');
     tabBtns.forEach(b => b.classList.remove('active'));
     runTypewriter();
@@ -518,6 +537,9 @@ const tabs = [
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.dataset.section!;
+      if (target !== current) {
+        history.pushState(null, '', hashForTab(target));
+      }
       tabBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       transitionTo(target);
@@ -527,17 +549,32 @@ const tabs = [
     });
   });
 
-  // Handle direct hash links (e.g. shared LinkedIn URLs)
-  const initHash = window.location.hash;
-  if (initHash.startsWith('#blog')) {
+  // Initial activation from hash (direct load / shared link)
+  const initTab = tabFromHash(window.location.hash);
+  if (initTab !== 'cover') {
     tabBtns.forEach(b => b.classList.remove('active'));
-    document.querySelector<HTMLElement>('[data-section="blog"]')?.classList.add('active');
+    document.querySelector<HTMLElement>(`[data-section="${initTab}"]`)?.classList.add('active');
     document.getElementById('page-cover')?.classList.remove('active');
-    document.getElementById('page-blog')?.classList.add('active');
-    current = 'blog';
-    setTimeout(() => {
-      if (initHash.startsWith('#blog/')) (window as any).checkBlogHash?.();
-      else (window as any).runBlogIntro?.();
-    }, 50);
+    document.getElementById(`page-${initTab}`)?.classList.add('active');
+    current = initTab;
+    // About + Resume don't self-init from hash; trigger their intros.
+    // Blog self-inits via Blog.astro — no call needed (would double-fire).
+    if (initTab === 'about')  (window as any).runAboutIntro?.();
+    if (initTab === 'resume') (window as any).runResumeIntro?.();
   }
+
+  // Browser back/forward + manual URL edits → swap tab without replaying intros
+  function syncTabToHash() {
+    const target = tabFromHash(window.location.hash);
+    if (target === current) return;
+    tabBtns.forEach(b => b.classList.remove('active'));
+    if (target !== 'cover') {
+      document.querySelector<HTMLElement>(`[data-section="${target}"]`)?.classList.add('active');
+    }
+    document.getElementById(`page-${current}`)?.classList.remove('active');
+    document.getElementById(`page-${target}`)?.classList.add('active');
+    current = target;
+  }
+  window.addEventListener('popstate', syncTabToHash);
+  window.addEventListener('hashchange', syncTabToHash);
 </script>
