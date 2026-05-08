@@ -56,16 +56,22 @@
     flex-direction: column;
     background: #0d1117;
     overflow: hidden;
+    border: 3px solid #2a2a2e;
+    border-top: none;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.4);
   }
 
   /* ── Chrome ── */
   .r-chrome {
-    background: #2a2a2e;
+    background: linear-gradient(to bottom, #34343a 0%, #28282c 100%);
     padding: 0.65rem 1rem;
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    border-bottom: 1px solid rgba(0,0,0,0.4);
+    border-bottom: 1px solid rgba(0,0,0,0.5);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      inset 0 -1px 0 rgba(0,0,0,0.25);
     flex-shrink: 0;
   }
 
@@ -94,6 +100,7 @@
     display: flex;
     flex: 1;
     overflow: hidden;
+    box-shadow: inset 0 6px 12px rgba(0,0,0,0.4);
   }
 
   /* ── Output pane (left) ── */
@@ -311,9 +318,9 @@
       <div style="height:0.4rem"></div>
       <div class="out-row"><span class="out-company">MathWorks</span><span class="out-muted">Oct 2022 – Present</span></div>
       <div class="out-role">Senior Software Engineer, Simulink Test Team  ·  Natick, MA</div>
-      <div style="margin-bottom:0.35rem">· <span style="color:#e3b341;font-weight:700">[Current focus]</span> Researching and developing agentic workflows to bring AI agent-assisted support to Simulink Test, covering areas such as test interface understanding and requirement-based test authoring</div>
-      <div style="margin-bottom:0.35rem">· Built core workflows for the next-generation Simulink Test Manager V2, covering test inputs, parameter overrides, and data visualization</div>
-      <div>· Delivered end-to-end integration of ADAS/AV workflows (RoadRunner) into the Simulink Test V&amp;V pipeline</div>
+      <div style="margin-bottom:0.35rem">· <span style="color:#e3b341;font-weight:700">[Current focus]</span> Designing, developing, and delivering end-to-end V&amp;V capabilities for the released <span style="font-weight:700">Simulink Agentic Toolkit</span> (MathWorks' AI agent product) via skill-based and script-based agentic workflows with engineer-in-the-loop design and iterative feedback loops modeled on the human V&amp;V cycle (author, run, analyze, iterate on tests or the model), focused on Simulink Test workflows like requirement-based test authoring and test interface setup (parameter overrides, inputs, assessments)</div>
+      <div style="margin-bottom:0.35rem">· Designing and delivering test interface authoring features for the next-generation <span style="font-weight:700">Simulink Test Manager V2</span>, a major revamp of MathWorks' long-standing Test Manager Classic, including parameter overrides, external inputs, source blocks, and signal visualization integration to drive test simulation runs and bring an enhanced V&amp;V experience to test engineers in safety-critical model-based design</div>
+      <div>· Independently designed and delivered the <span style="font-weight:700">RoadRunner test case feature</span> in Simulink Test, a major integration of MathWorks' ADAS/AV scenario design/simulation platform (RoadRunner) with the Simulink model-based V&amp;V pipeline, enabling RoadRunner scenario simulation and the full Simulink Test V&amp;V experience for ADAS/AV customers</div>
       <div style="height:1.25rem"></div>
       <div class="out-row"><span class="out-company">Hippo Insurance</span><span class="out-muted">Nov 2021 – Sep 2022</span></div>
       <div class="out-role">Software Engineer  ·  Palo Alto, CA</div>
@@ -340,8 +347,8 @@
       <div style="height:0.4rem"></div>
       <div style="margin-bottom:0.5rem"><span class="out-muted">Languages &amp; Frameworks  </span><span>C++  ·  JavaScript (Node.js)  ·  Java  ·  Python (Django)</span></div>
       <div style="margin-bottom:0.5rem"><span class="out-muted">Databases               </span><span>PostgreSQL (schema design, optimization, indexing)</span></div>
-      <div style="margin-bottom:0.5rem"><span class="out-muted">AI &amp; Agentic Tooling    </span><span>Claude Code — skill design, meta-workflow scaffolding, agentic workflow architecture</span></div>
-      <div><span class="out-muted">Platforms               </span><span>Windows  ·  Linux</span></div>
+      <div style="margin-bottom:0.5rem"><span class="out-muted">Model-Based Design      </span><span>MATLAB  ·  Simulink</span></div>
+      <div><span class="out-muted">AI &amp; Agentic Tooling    </span><span>Claude Code — skill design, meta-workflow scaffolding, agentic workflow architecture</span></div>
     `;
   }
 

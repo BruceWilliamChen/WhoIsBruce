@@ -6,6 +6,7 @@ import Photos from '../components/Photos.astro';
 import Blog from '../components/Blog.astro';
 
 const tabs = [
+  { id: 'cover',  label: 'Home'   },
   { id: 'about',  label: 'About'  },
   { id: 'resume', label: 'Resume' },
   // { id: 'photos', label: 'Photos' },  // TODO: re-enable when Photos page is ready
@@ -32,6 +33,21 @@ const tabs = [
             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
           </svg>
         </a>
+        <div class="resume-wrapper">
+          <a class="btn-social btn-resume" href="/WhoIsBruce/bruce_chen_resume.pdf" download="Bruce_Chen_Resume.pdf" aria-label="Download Resume" title="Download Resume (PDF)">
+            <svg class="social-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" fill="currentColor"/>
+              <path d="M14 2v6h6L14 2z" fill="rgba(0,0,0,0.35)"/>
+              <rect x="8" y="12" width="6" height="1.6" fill="rgba(0,0,0,0.7)" rx="0.4"/>
+              <rect x="8" y="15" width="8" height="1.6" fill="rgba(0,0,0,0.7)" rx="0.4"/>
+              <rect x="8" y="18" width="5" height="1.6" fill="rgba(0,0,0,0.7)" rx="0.4"/>
+            </svg>
+          </a>
+          <div class="r-hal-tip">
+            <div class="r-tip-arrow"></div>
+            <div class="r-tip-bubble"><span class="r-tip-hal">[HAL]:</span> click to download · resume PDF</div>
+          </div>
+        </div>
       </div>
 
       <!-- Right: top bar + content -->
@@ -113,12 +129,13 @@ const tabs = [
 
   /* ── Left strip ── */
   .left-strip {
-    background: #1a1a1c;
+    background: #0d1117;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 0.75rem;
-    border-right: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    z-index: 10;
   }
 
   .btn-cover {
@@ -134,14 +151,19 @@ const tabs = [
     border-radius: 50%;
     object-fit: cover;
     display: block;
-    border: 1.5px solid rgba(255,255,255,0.15);
     transform-origin: top center;
-    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+    box-shadow:
+      0 10px 22px rgba(0,0,0,0.6),
+      0 3px 6px rgba(0,0,0,0.45);
   }
   .btn-cover:hover .headshot {
     transform: scale(1.55);
-    border-color: rgba(255,255,255,0.6);
-    box-shadow: 0 0 18px rgba(255,255,255,0.12);
+    box-shadow:
+      0 16px 32px rgba(0,0,0,0.7),
+      0 5px 10px rgba(0,0,0,0.55),
+      0 0 22px rgba(255,255,255,0.14);
+    filter: brightness(1.06);
   }
 
   .btn-social {
@@ -153,18 +175,98 @@ const tabs = [
     height: 68px;
     border-radius: 50%;
     overflow: hidden;
-    border: 1.5px solid rgba(255,255,255,0.15);
     color: rgba(255,255,255,0.75);
     transform-origin: top center;
-    transition: transform 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.25s ease, color 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      0 10px 22px rgba(0,0,0,0.6),
+      0 3px 6px rgba(0,0,0,0.45);
   }
   .btn-github { color: rgba(255,255,255,0.9); }
   .btn-linkedin { color: #0A66C2; }
+  .btn-resume {
+    color: rgba(255,255,255,0.95);
+    border-radius: 0;
+    width: 48px;
+    height: 48px;
+    margin-top: 0;
+    transform-origin: bottom center;
+    box-shadow:
+      0 10px 22px rgba(0,0,0,0.6),
+      0 3px 6px rgba(0,0,0,0.45);
+  }
+  .btn-resume .social-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .resume-wrapper {
+    position: relative;
+    margin-top: auto;
+    margin-bottom: 0.75rem;
+  }
+
+  .r-hal-tip {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    margin-left: 0.6rem;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  body[data-page="cover"] .r-hal-tip {
+    opacity: 1;
+    animation: breathe-tip 3.5s ease-in-out infinite;
+  }
+
+  .r-tip-arrow {
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 6px solid rgba(248,113,113,0.3);
+  }
+
+  .r-tip-bubble {
+    background: #1e1e22;
+    border: 1px solid rgba(248,113,113,0.3);
+    border-radius: 6px;
+    padding: 0.45rem 1rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.7);
+    white-space: nowrap;
+  }
+
+  .r-tip-hal {
+    color: #f87171;
+    font-weight: 700;
+    margin-right: 0.4rem;
+  }
+
+  @keyframes breathe-tip {
+    0%, 100% { opacity: 0.55; transform: translateY(-50%) scale(1); }
+    50%      { opacity: 0.9;  transform: translateY(-50%) scale(1.04); }
+  }
 
   .btn-social:hover {
     transform: scale(1.55);
-    border-color: rgba(255,255,255,0.6);
-    box-shadow: 0 0 18px rgba(255,255,255,0.12);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      0 16px 32px rgba(0,0,0,0.7),
+      0 5px 10px rgba(0,0,0,0.55),
+      0 0 22px rgba(255,255,255,0.14);
+    filter: brightness(1.06);
+  }
+  .btn-resume:hover {
+    box-shadow:
+      0 16px 32px rgba(0,0,0,0.7),
+      0 5px 10px rgba(0,0,0,0.55);
   }
 
   .social-icon {
@@ -181,7 +283,7 @@ const tabs = [
 
   /* ── Top tab bar ── */
   .top-bar {
-    background: #1a1a1c;
+    background: #0d1117;
     border-bottom: 1px solid rgba(0,0,0,0.5);
     display: flex;
     align-items: flex-end;
@@ -214,11 +316,12 @@ const tabs = [
     border-color: rgba(255,255,255,0.18);
   }
   .tab-btn.active {
-    background: #2e2e32;
+    background: linear-gradient(to bottom, #34343a 0%, #28282c 100%);
     color: #3fb950;
     border-color: rgba(255,255,255,0.12);
     border-top-color: rgba(255,255,255,0.12);
     text-shadow: 0 0 8px rgba(63,185,80,0.6), 0 0 20px rgba(63,185,80,0.25);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
   }
 
   /* ── Pages ── */
@@ -273,12 +376,15 @@ const tabs = [
   }
 
   .term-chrome {
-    background: #2a2a2e;
+    background: linear-gradient(to bottom, #34343a 0%, #28282c 100%);
     padding: 0.65rem 1rem;
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    border-bottom: 1px solid rgba(0,0,0,0.4);
+    border-bottom: 1px solid rgba(0,0,0,0.5);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      inset 0 -1px 0 rgba(0,0,0,0.25);
   }
 
   .term-dot {
@@ -402,7 +508,7 @@ const tabs = [
   }
 
   function hashForTab(tab: string): string {
-    return tab === 'cover' ? '' : '#' + tab;
+    return tab === 'cover' ? window.location.pathname : '#' + tab;
   }
 
   async function runTypewriter() {
@@ -505,6 +611,7 @@ const tabs = [
   const tabBtns = document.querySelectorAll<HTMLElement>('.tab-btn');
   let current = 'cover';
   let animating = false;
+  document.body.dataset.page = current;
 
   document.getElementById('btn-cover')?.addEventListener('click', () => {
     if (current !== 'cover') {
@@ -512,6 +619,7 @@ const tabs = [
     }
     transitionTo('cover');
     tabBtns.forEach(b => b.classList.remove('active'));
+    document.querySelector<HTMLElement>(`[data-section="cover"]`)?.classList.add('active');
     runTypewriter();
   });
 
@@ -530,6 +638,7 @@ const tabs = [
       outEl.classList.remove('exit');
       inEl.classList.add('active');
       current = target;
+      document.body.dataset.page = target;
       setTimeout(() => { animating = false; }, 350);
     }, 200);
   }
@@ -543,6 +652,7 @@ const tabs = [
       tabBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       transitionTo(target);
+      if (target === 'cover')  runTypewriter();
       if (target === 'resume') (window as any).runResumeIntro?.();
       if (target === 'about')  (window as any).runAboutIntro?.();
       if (target === 'blog')   (window as any).runBlogIntro?.();
@@ -551,12 +661,13 @@ const tabs = [
 
   // Initial activation from hash (direct load / shared link)
   const initTab = tabFromHash(window.location.hash);
+  tabBtns.forEach(b => b.classList.remove('active'));
+  document.querySelector<HTMLElement>(`[data-section="${initTab}"]`)?.classList.add('active');
   if (initTab !== 'cover') {
-    tabBtns.forEach(b => b.classList.remove('active'));
-    document.querySelector<HTMLElement>(`[data-section="${initTab}"]`)?.classList.add('active');
     document.getElementById('page-cover')?.classList.remove('active');
     document.getElementById(`page-${initTab}`)?.classList.add('active');
     current = initTab;
+    document.body.dataset.page = initTab;
     // About + Resume don't self-init from hash; trigger their intros.
     // Blog self-inits via Blog.astro — no call needed (would double-fire).
     if (initTab === 'about')  (window as any).runAboutIntro?.();
@@ -568,12 +679,11 @@ const tabs = [
     const target = tabFromHash(window.location.hash);
     if (target === current) return;
     tabBtns.forEach(b => b.classList.remove('active'));
-    if (target !== 'cover') {
-      document.querySelector<HTMLElement>(`[data-section="${target}"]`)?.classList.add('active');
-    }
+    document.querySelector<HTMLElement>(`[data-section="${target}"]`)?.classList.add('active');
     document.getElementById(`page-${current}`)?.classList.remove('active');
     document.getElementById(`page-${target}`)?.classList.add('active');
     current = target;
+    document.body.dataset.page = target;
   }
   window.addEventListener('popstate', syncTabToHash);
   window.addEventListener('hashchange', syncTabToHash);

@@ -18,9 +18,9 @@ Senior software engineer with 8+ years of experience in full-stack development, 
 ### MathWorks — Senior Software Engineer, Simulink Test Team
 *Oct 2022 – Present | Natick, MA*
 
-- **[Current focus]** Researching and developing agentic workflows to bring AI agent-assisted support to Simulink Test, covering areas such as test interface understanding and requirement-based test authoring
-- Built core workflows for the next-generation Simulink Test Manager V2, covering test inputs, parameter overrides, and data visualization
-- Delivered end-to-end integration of ADAS/AV workflows (RoadRunner) into the Simulink Test V&V pipeline
+- **[Current focus]** Designing, developing, and delivering end-to-end V&V capabilities for the released **Simulink Agentic Toolkit** (MathWorks' AI agent product) via skill-based and script-based agentic workflows with engineer-in-the-loop design and iterative feedback loops modeled on the human V&V cycle (author, run, analyze, iterate on tests or the model), focused on Simulink Test workflows like requirement-based test authoring and test interface setup (parameter overrides, inputs, assessments)
+- Designing and delivering test interface authoring features for the next-generation **Simulink Test Manager V2**, a major revamp of MathWorks' long-standing Test Manager Classic, including parameter overrides, external inputs, source blocks, and signal visualization integration to drive test simulation runs and bring an enhanced V&V experience to test engineers in safety-critical model-based design
+- Independently designed and delivered the **RoadRunner test case feature** in Simulink Test, a major integration of MathWorks' ADAS/AV scenario design/simulation platform (RoadRunner) with the Simulink model-based V&V pipeline, enabling RoadRunner scenario simulation and the full Simulink Test V&V experience for ADAS/AV customers
 
 ### Hippo Insurance — Software Engineer
 *Nov 2021 – Sep 2022 | Palo Alto, CA*
@@ -47,9 +47,9 @@ Senior software engineer with 8+ years of experience in full-stack development, 
 
 **Databases:** PostgreSQL (relational DB design, schema optimization, indexing)
 
-**AI & Agentic Tooling:** Claude Code — skill design, meta-workflow scaffolding, agentic workflow architecture
+**Model-Based Design:** MATLAB, Simulink
 
-**Platforms:** Windows, Linux
+**AI & Agentic Tooling:** Claude Code — skill design, meta-workflow scaffolding, agentic workflow architecture
 
 ## Education
 
