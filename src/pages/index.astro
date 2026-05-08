@@ -6,6 +6,7 @@ import Photos from '../components/Photos.astro';
 import Blog from '../components/Blog.astro';
 
 const tabs = [
+  { id: 'cover',  label: 'Home'   },
   { id: 'about',  label: 'About'  },
   { id: 'resume', label: 'Resume' },
   // { id: 'photos', label: 'Photos' },  // TODO: re-enable when Photos page is ready
@@ -113,12 +114,11 @@ const tabs = [
 
   /* ── Left strip ── */
   .left-strip {
-    background: #1a1a1c;
+    background: #F0EEE6;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 0.75rem;
-    border-right: 1px solid rgba(255,255,255,0.06);
   }
 
   .btn-cover {
@@ -134,14 +134,14 @@ const tabs = [
     border-radius: 50%;
     object-fit: cover;
     display: block;
-    border: 1.5px solid rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(0,0,0,0.15);
     transform-origin: top center;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   }
   .btn-cover:hover .headshot {
     transform: scale(1.55);
-    border-color: rgba(255,255,255,0.6);
-    box-shadow: 0 0 18px rgba(255,255,255,0.12);
+    border-color: rgba(0,0,0,0.4);
+    box-shadow: 0 0 18px rgba(0,0,0,0.12);
   }
 
   .btn-social {
@@ -153,18 +153,18 @@ const tabs = [
     height: 68px;
     border-radius: 50%;
     overflow: hidden;
-    border: 1.5px solid rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.75);
+    border: 1.5px solid rgba(0,0,0,0.15);
+    color: rgba(0,0,0,0.65);
     transform-origin: top center;
     transition: transform 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   }
-  .btn-github { color: rgba(255,255,255,0.9); }
+  .btn-github { color: rgba(0,0,0,0.85); }
   .btn-linkedin { color: #0A66C2; }
 
   .btn-social:hover {
     transform: scale(1.55);
-    border-color: rgba(255,255,255,0.6);
-    box-shadow: 0 0 18px rgba(255,255,255,0.12);
+    border-color: rgba(0,0,0,0.4);
+    box-shadow: 0 0 18px rgba(0,0,0,0.12);
   }
 
   .social-icon {
@@ -181,51 +181,44 @@ const tabs = [
 
   /* ── Top tab bar ── */
   .top-bar {
-    background: #1a1a1c;
-    border-bottom: 1px solid rgba(0,0,0,0.5);
+    background: #F0EEE6;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     height: 52px;
-    padding: 0;
-    gap: 3px;
+    padding: 0 2.5rem;
+    gap: 0.4rem;
     flex-shrink: 0;
   }
 
   .tab-btn {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-bottom: none;
-    border-top: 2px solid transparent;
-    border-radius: 6px 6px 0 0;
-    color: rgba(255,255,255,0.38);
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.92rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: lowercase;
-    padding: 0 1.8rem;
-    height: 38px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: rgba(0,0,0,0.50);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    padding: 0.45rem 0.85rem;
+    height: auto;
     cursor: pointer;
-    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    transition: color 0.15s, border-color 0.15s;
   }
   .tab-btn:hover {
-    background: rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.9);
-    border-color: rgba(255,255,255,0.18);
+    color: rgba(0,0,0,0.85);
   }
   .tab-btn.active {
-    background: #2e2e32;
-    color: #3fb950;
-    border-color: rgba(255,255,255,0.12);
-    border-top-color: rgba(255,255,255,0.12);
-    text-shadow: 0 0 8px rgba(63,185,80,0.6), 0 0 20px rgba(63,185,80,0.25);
+    color: #1A1714;
+    font-weight: 600;
+    border-bottom-color: #2da44e;
   }
 
   /* ── Pages ── */
   .pages {
     flex: 1;
     overflow: hidden;
-    background: #0d1117;
+    background: #F0EEE6;
     position: relative;
   }
 
@@ -257,7 +250,7 @@ const tabs = [
   .cover {
     width: 100%;
     height: 100%;
-    background: radial-gradient(ellipse at center, #252528 0%, #1a1a1c 100%);
+    background: #F0EEE6;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -266,10 +259,14 @@ const tabs = [
   /* Terminal window */
   .term-window {
     width: min(1170px, 90%);
-    border-radius: 10px;
+    border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.7);
-    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow:
+      0 90px 150px rgba(0,0,0,0.34),
+      0 44px 72px rgba(0,0,0,0.22),
+      0 18px 32px rgba(0,0,0,0.16),
+      0 6px 12px rgba(0,0,0,0.12),
+      0 0 50px rgba(0,0,0,0.10);
   }
 
   .term-chrome {
@@ -512,6 +509,7 @@ const tabs = [
     }
     transitionTo('cover');
     tabBtns.forEach(b => b.classList.remove('active'));
+    document.querySelector<HTMLElement>(`[data-section="cover"]`)?.classList.add('active');
     runTypewriter();
   });
 
@@ -543,6 +541,7 @@ const tabs = [
       tabBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       transitionTo(target);
+      if (target === 'cover')  runTypewriter();
       if (target === 'resume') (window as any).runResumeIntro?.();
       if (target === 'about')  (window as any).runAboutIntro?.();
       if (target === 'blog')   (window as any).runBlogIntro?.();
@@ -551,9 +550,9 @@ const tabs = [
 
   // Initial activation from hash (direct load / shared link)
   const initTab = tabFromHash(window.location.hash);
+  tabBtns.forEach(b => b.classList.remove('active'));
+  document.querySelector<HTMLElement>(`[data-section="${initTab}"]`)?.classList.add('active');
   if (initTab !== 'cover') {
-    tabBtns.forEach(b => b.classList.remove('active'));
-    document.querySelector<HTMLElement>(`[data-section="${initTab}"]`)?.classList.add('active');
     document.getElementById('page-cover')?.classList.remove('active');
     document.getElementById(`page-${initTab}`)?.classList.add('active');
     current = initTab;
@@ -568,9 +567,7 @@ const tabs = [
     const target = tabFromHash(window.location.hash);
     if (target === current) return;
     tabBtns.forEach(b => b.classList.remove('active'));
-    if (target !== 'cover') {
-      document.querySelector<HTMLElement>(`[data-section="${target}"]`)?.classList.add('active');
-    }
+    document.querySelector<HTMLElement>(`[data-section="${target}"]`)?.classList.add('active');
     document.getElementById(`page-${current}`)?.classList.remove('active');
     document.getElementById(`page-${target}`)?.classList.add('active');
     current = target;
