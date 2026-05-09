@@ -186,12 +186,18 @@ const tabs = [
       0 3px 6px rgba(0,0,0,0.45);
   }
   .btn-cover:hover .headshot {
-    transform: scale(1.55);
+    transform: scale(1.3);
     box-shadow:
       0 16px 32px rgba(0,0,0,0.7),
       0 5px 10px rgba(0,0,0,0.55),
       0 0 22px color-mix(in srgb, var(--text-primary) 14%, transparent);
     filter: brightness(1.06);
+  }
+
+  /* When an icon scales on hover, push subsequent siblings down so they dodge it */
+  .btn-cover:hover ~ .btn-social,
+  .btn-github:hover ~ .btn-social {
+    transform: translateY(22px);
   }
 
   .btn-social {
@@ -295,7 +301,7 @@ const tabs = [
   }
 
   .btn-social:hover {
-    transform: scale(1.55);
+    transform: scale(1.3);
     box-shadow:
       inset 0 1px 0 color-mix(in srgb, var(--text-primary) 18%, transparent),
       0 16px 32px rgba(0,0,0,0.7),
