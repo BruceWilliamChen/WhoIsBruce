@@ -19,7 +19,7 @@ function formatDate(date: Date) {
 <div class="blog-terminal">
 
   <!-- List view -->
-  <div id="blog-list-view">
+  <div id="blog-list-view" class="bv-active">
     <div class="b-chrome">
       <span class="b-dot dot-r"></span>
       <span class="b-dot dot-y"></span>
@@ -41,7 +41,7 @@ function formatDate(date: Date) {
   </div>
 
   <!-- Post view -->
-  <div id="blog-post-view" style="display:none">
+  <div id="blog-post-view">
     <div class="b-chrome">
       <span class="b-dot dot-r"></span>
       <span class="b-dot dot-y"></span>
@@ -53,7 +53,7 @@ function formatDate(date: Date) {
         <button class="b-back-btn" id="blog-back-btn"><span class="b-back-prompt">$</span> cd ..<span class="b-back-cursor">█</span></button>
         <div class="b-hal-tip">
           <div class="b-tip-arrow"></div>
-          <div class="b-tip-bubble"><span class="b-tip-hal">[HAL]:</span> click to execute · returns to menu</div>
+          <div class="b-tip-bubble"><span class="b-tip-hal">[HAL]:</span> return to index</div>
         </div>
       </div>
     </div>
@@ -86,13 +86,24 @@ function formatDate(date: Date) {
     border-top: none;
     border-radius: 10px;
     box-shadow: inset 0 0 0 1px var(--inset-groove);
+    position: relative;
   }
 
   /* ── List view ── */
   #blog-list-view {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  #blog-list-view.bv-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
   .b-chrome {
@@ -209,9 +220,19 @@ function formatDate(date: Date) {
 
   /* ── Post view ── */
   #blog-post-view {
-    height: 100%;
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  #blog-post-view.bv-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
   .b-post-header {
@@ -294,8 +315,8 @@ function formatDate(date: Date) {
   }
 
   @keyframes breathe {
-    0%, 100% { opacity: 0.55; transform: scale(1); }
-    50%       { opacity: 0.9;  transform: scale(1.04); }
+    0%, 100% { opacity: 0.45; transform: scale(1); }
+    50%       { opacity: 1;    transform: scale(1.04); }
   }
 
   .b-post-pane {
@@ -411,6 +432,26 @@ function formatDate(date: Date) {
     color: var(--text-primary);
   }
 
+  /* Override Shiki's hardcoded inline styles on multi-line code blocks. */
+  .post-body :global(pre) {
+    background: color-mix(in srgb, var(--text-primary) 6%, transparent) !important;
+    color: var(--text-primary) !important;
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    border: 1px solid color-mix(in srgb, var(--text-primary) 12%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    line-height: 1.6;
+    margin: 0 0 1.5rem;
+  }
+  .post-body :global(pre code),
+  .post-body :global(pre span) {
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0;
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -427,20 +468,20 @@ function formatDate(date: Date) {
   const backBtn    = document.getElementById('blog-back-btn') as HTMLElement;
 
   function showList(updateHash = true) {
-    postView.style.display = 'none';
-    listView.style.display = 'flex';
+    postView.classList.remove('bv-active');
+    listView.classList.add('bv-active');
     if (updateHash) history.pushState(null, '', '#blog');
     runBlogIntro();
   }
 
   function showPost(slug: string, updateHash = true) {
-    listView.style.display = 'none';
     document.querySelectorAll('.post-content').forEach(el => {
       (el as HTMLElement).style.display = 'none';
     });
     const target = document.querySelector(`.post-content[data-slug="${slug}"]`) as HTMLElement;
     if (target) target.style.display = 'block';
-    postView.style.display = 'flex';
+    listView.classList.remove('bv-active');
+    postView.classList.add('bv-active');
     if (updateHash) history.pushState(null, '', '#blog/' + slug);
   }
 
@@ -462,15 +503,15 @@ function formatDate(date: Date) {
     if (hash.startsWith('#blog/')) {
       checkBlogHash();
     } else if (hash === '#blog' || hash === '') {
-      postView.style.display = 'none';
-      listView.style.display = 'flex';
+      postView.classList.remove('bv-active');
+      listView.classList.add('bv-active');
       runBlogIntro();
     }
   });
 
   async function runBlogIntro() {
-    postView.style.display = 'none';
-    listView.style.display = 'flex';
+    postView.classList.remove('bv-active');
+    listView.classList.add('bv-active');
     blogRows.style.display = 'none';
     blogOutput.innerHTML = '';
 
