@@ -12,12 +12,173 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{title} — Bruce Chen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t !== 'dark') document.documentElement.dataset.theme = 'light';
+        } catch (_) {}
+      })();
+    </script>
     <style is:global>
+      :root {
+        --bg-base:        #0d1117;
+        --bg-cover:       #0d1117;
+        --bg-chrome-from: #34343a;
+        --bg-chrome-to:   #28282c;
+        --bg-popup:       #1e1e22;
+        --border-bezel:   #2a2a2e;
+
+        --text-primary:   #e6edf3;
+        --text-muted:     rgba(255,255,255,0.35);
+        --text-faint:     rgba(255,255,255,0.25);
+
+        --accent-green:   #3fb950;
+        --accent-red:     #f87171;
+        --accent-cyan:    #7dd3fc;
+        --accent-yellow:  #e3b341;
+
+        --edge-highlight: rgba(255,255,255,0.10);
+        --edge-shadow:    rgba(0,0,0,0.25);
+        --shadow-drop:    rgba(0,0,0,0.6);
+        --inset-groove:   rgba(0,0,0,0.4);
+
+        --font-mono: 'JetBrains Mono', ui-monospace, 'Courier New', Courier, monospace;
+      }
+
+      [data-theme="light"] {
+        --bg-base:        #F0EEE6;
+        --bg-cover:       #F0EEE6;
+        --bg-chrome-from: #E8E3D5;
+        --bg-chrome-to:   #DCD6C5;
+        --bg-popup:       #FAF7F0;
+        --border-bezel:   #DCD6C5;
+
+        --text-primary:   #0D0905;
+        --text-muted:     rgba(0,0,0,0.65);
+        --text-faint:     rgba(0,0,0,0.50);
+
+        --accent-green:   #2da44e;
+        --accent-red:     #c44a3a;
+        --accent-cyan:    #0969da;
+        --accent-yellow:  #9a6700;
+
+        --edge-highlight: rgba(255,255,255,0.6);
+        --edge-shadow:    rgba(0,0,0,0.10);
+        --shadow-drop:    rgba(0,0,0,0.18);
+        --inset-groove:   rgba(0,0,0,0.08);
+      }
+
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: system-ui, sans-serif; color: #1a1a1a; }
+      body { font-family: system-ui, sans-serif; color: var(--text-primary); font-weight: 500; }
+
+      /* During a theme toggle, fade themed properties across every element.
+         Class is added on click, removed after the transition settles, so
+         hover/interactive transitions elsewhere stay snappy the rest of the time. */
+      html.theme-transitioning,
+      html.theme-transitioning *,
+      html.theme-transitioning *::before,
+      html.theme-transitioning *::after {
+        transition:
+          background-color 0.4s ease,
+          background 0.4s ease,
+          color 0.4s ease,
+          border-color 0.4s ease,
+          fill 0.4s ease,
+          stroke 0.4s ease,
+          box-shadow 0.4s ease,
+          text-shadow 0.4s ease !important;
+      }
+
+      /* ── Theme toggle (sliding pill, anchored right end of tab row) ── */
+      .theme-toggle {
+        margin-left: auto;
+        margin-right: 1rem;
+        align-self: center;
+        background: transparent;
+        border: none;
+        padding: 4px;
+        cursor: pointer;
+        outline: none;
+      }
+      .theme-toggle:focus,
+      .theme-toggle:focus-visible {
+        outline: none;
+      }
+
+      .theme-toggle-track {
+        display: block;
+        width: 64px;
+        height: 28px;
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--text-primary) 14%, transparent);
+        position: relative;
+        transition: background 0.25s ease;
+        box-shadow:
+          inset 0 1px 2px rgba(0,0,0,0.2),
+          inset 0 -1px 0 var(--edge-highlight);
+      }
+
+      .theme-toggle-thumb {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--text-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), background 0.4s ease;
+        box-shadow:
+          0 1px 3px rgba(0,0,0,0.35),
+          0 1px 1px rgba(0,0,0,0.2);
+      }
+
+      [data-theme="light"] .theme-toggle-thumb {
+        transform: translateX(36px);
+      }
+
+      .theme-toggle-icon {
+        width: 13px;
+        height: 13px;
+        color: var(--bg-base);
+      }
+      .theme-toggle-icon.theme-toggle-sun  { display: none; }
+      .theme-toggle-icon.theme-toggle-moon { display: block; }
+      [data-theme="light"] .theme-toggle-icon.theme-toggle-sun  { display: block; }
+      [data-theme="light"] .theme-toggle-icon.theme-toggle-moon { display: none; }
     </style>
   </head>
   <body>
     <slot />
+    <script is:inline>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        if (!btn) return;
+        var transitionTimer = null;
+        btn.addEventListener('click', function () {
+          var html = document.documentElement;
+          html.classList.add('theme-transitioning');
+          if (transitionTimer) clearTimeout(transitionTimer);
+          transitionTimer = setTimeout(function () {
+            html.classList.remove('theme-transitioning');
+          }, 450);
+
+          var isLight = html.dataset.theme === 'light';
+          if (isLight) {
+            delete html.dataset.theme;
+            try { localStorage.setItem('theme', 'dark'); } catch (_) {}
+          } else {
+            html.dataset.theme = 'light';
+            try { localStorage.setItem('theme', 'light'); } catch (_) {}
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
