@@ -87,6 +87,7 @@ function formatDate(date: Date) {
     border-radius: 10px;
     box-shadow: inset 0 0 0 1px var(--inset-groove);
     position: relative;
+    min-height: 0;
   }
 
   /* ── List view ── */
@@ -103,6 +104,11 @@ function formatDate(date: Date) {
   #blog-list-view.bv-active {
     opacity: 1;
     transform: translateY(0);
+  }
+  /* Only let the active view capture events when the containing page is also active.
+     Otherwise the blog list view (which renders last in DOM) silently overlays the
+     About/Resume/Cover panes and eats every scroll. */
+  :global(.page.active) #blog-list-view.bv-active {
     pointer-events: auto;
   }
 
@@ -140,6 +146,7 @@ function formatDate(date: Date) {
 
   .b-output-pane {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
     padding: 2rem 2.5rem;
     font-family: var(--font-mono);
@@ -232,6 +239,8 @@ function formatDate(date: Date) {
   #blog-post-view.bv-active {
     opacity: 1;
     transform: translateY(0);
+  }
+  :global(.page.active) #blog-post-view.bv-active {
     pointer-events: auto;
   }
 
@@ -321,6 +330,7 @@ function formatDate(date: Date) {
 
   .b-post-pane {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
     padding: 3rem 2rem;
     scrollbar-width: thin;
@@ -480,6 +490,8 @@ function formatDate(date: Date) {
     });
     const target = document.querySelector(`.post-content[data-slug="${slug}"]`) as HTMLElement;
     if (target) target.style.display = 'block';
+    const postPane = document.querySelector('.b-post-pane') as HTMLElement | null;
+    if (postPane) postPane.scrollTop = 0;
     listView.classList.remove('bv-active');
     postView.classList.add('bv-active');
     if (updateHash) history.pushState(null, '', '#blog/' + slug);
