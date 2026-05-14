@@ -48,16 +48,16 @@ function formatDate(date: Date) {
       <span class="b-dot dot-g"></span>
       <span class="b-title">bash — bchen@hal9000</span>
     </div>
-    <div class="b-post-header">
-      <div class="b-back-wrapper">
-        <button class="b-back-btn" id="blog-back-btn"><span class="b-back-prompt">$</span> cd ..<span class="b-back-cursor">█</span></button>
-        <div class="b-hal-tip">
-          <div class="b-tip-arrow"></div>
-          <div class="b-tip-bubble"><span class="b-tip-hal">[HAL]:</span> return to index</div>
+    <div class="b-post-pane">
+      <div class="b-post-header">
+        <div class="b-back-wrapper">
+          <button class="b-back-btn" id="blog-back-btn"><span class="b-back-prompt">$</span> cd ..<span class="b-back-cursor">█</span></button>
+          <div class="b-hal-tip">
+            <div class="b-tip-arrow"></div>
+            <div class="b-tip-bubble"><span class="b-tip-hal">[HAL]:</span> return to index</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="b-post-pane">
       {renderedPosts.map(({ post, Content }) => (
         <div class="post-content" data-slug={post.id} style="display:none">
           <div class="post-meta">
@@ -207,6 +207,14 @@ function formatDate(date: Date) {
     color: var(--accent-green);
   }
 
+  :global([data-theme="light"]) .post-row:hover {
+    background: color-mix(in srgb, var(--accent-red) 8%, transparent);
+  }
+  :global([data-theme="light"]) .post-row:hover .post-title,
+  :global([data-theme="light"]) .post-row:hover .post-arrow {
+    color: var(--accent-red);
+  }
+
   .post-date {
     color: var(--text-muted);
     font-size: 0.9rem;
@@ -245,15 +253,13 @@ function formatDate(date: Date) {
   }
 
   .b-post-header {
-    padding: 1rem 2rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 6%, transparent);
-    flex-shrink: 0;
+    margin-bottom: 1.5rem;
   }
 
   .b-back-btn {
     background: transparent;
     border: none;
-    color: var(--text-primary);
+    color: var(--accent-green);
     font-family: var(--font-mono);
     font-size: 1.1rem;
     font-weight: 500;
@@ -332,9 +338,10 @@ function formatDate(date: Date) {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    padding: 3rem 2rem;
+    padding: 2rem 2.5rem;
     scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--text-primary) 25%, transparent) transparent;
+    box-shadow: inset 0 6px 12px rgba(0,0,0,0.4);
   }
 
   .post-content {
