@@ -1,3 +1,27 @@
+---
+import { frontmatter } from '../data/about.md';
+
+type Card = { emoji: string; title: string; body: string };
+type Section = { header: string; layout: string; cards: Card[] };
+
+const d = frontmatter as { sections: Section[] };
+
+const D = '─'.repeat(54);
+
+const sectionsHTML = d.sections.map((s) => `
+  <div class="out-header">${s.header}</div>
+  <div class="out-divider">${D}</div>
+  <div class="${s.layout}">
+    ${s.cards.map((c) => `
+      <div class="card">
+        <div class="card-title">${c.emoji} ${c.title}</div>
+        <div class="card-body">${c.body}</div>
+      </div>
+    `).join('')}
+  </div>
+`);
+---
+
 <div class="about-terminal">
 
   <!-- Chrome -->
@@ -172,14 +196,12 @@
   }
 </style>
 
-<script>
-  const output     = document.getElementById('about-output') as HTMLElement;
-  const outputPane = output.parentElement as HTMLElement;
+<script define:vars={{ sectionsHTML }}>
+  const output = document.getElementById('about-output');
 
-  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-  const D = '─'.repeat(54);
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-  function appendOutput(html: string) {
+  function appendOutput(html) {
     const block = document.createElement('div');
     block.className = 'out-block';
     block.innerHTML = html;
@@ -190,65 +212,6 @@
     output.innerHTML = '';
   }
 
-  function whoAmIHTML() {
-    return `
-      <div class="out-header">[WHO I AM]</div>
-      <div class="out-divider">${D}</div>
-      <div class="card-grid-single">
-        <div class="card">
-          <div class="card-title">👤 Identity</div>
-          <div class="card-body">Hi, I'm Bruce — software engineer, builder, perpetual tinkerer.</div>
-        </div>
-        <div class="card">
-          <div class="card-title">🤖 Right now</div>
-          <div class="card-body">Deep in the AI wave — not just using it, but thinking hard about how agents can reshape the way engineers work. If a tool can amplify what I can build, I want to understand it inside out.</div>
-        </div>
-      </div>
-    `;
-  }
-
-  function outsideWorkHTML() {
-    return `
-      <div class="out-header">[OUTSIDE OF WORK]</div>
-      <div class="out-divider">${D}</div>
-      <div class="card-grid">
-        <div class="card">
-          <div class="card-title">🏊 Swimming</div>
-          <div class="card-body">Regular laps. Best way to clear the head.</div>
-        </div>
-        <div class="card">
-          <div class="card-title">🎬 Movies</div>
-          <div class="card-body">Chronic moviegoer. Big screen whenever possible.</div>
-        </div>
-        <div class="card">
-          <div class="card-title">✍️ Writing</div>
-          <div class="card-body">Novels, just for myself. No agenda, no readers required.</div>
-        </div>
-        <div class="card">
-          <div class="card-title">🫧 Perfumery</div>
-          <div class="card-body">Sizeable collection. Quietly dreaming of professional perfumer training someday.</div>
-        </div>
-      </div>
-    `;
-  }
-
-  function thisSiteHTML() {
-    return `
-      <div class="out-header">[THIS SITE]</div>
-      <div class="out-divider">${D}</div>
-      <div class="card-grid-single">
-        <div class="card">
-          <div class="card-title">🏠 This Space</div>
-          <div class="card-body">My corner of the internet. Built it because I wanted a space that felt like me, not a template.</div>
-        </div>
-        <div class="card">
-          <div class="card-title">📝 The Blog</div>
-          <div class="card-body">Where I think out loud — no fixed theme, no schedule. Could be a deep dive into AI agents, a fragrance review, notes on a novel I'm reading. Whatever's worth writing down.</div>
-        </div>
-      </div>
-    `;
-  }
-
   async function runAboutIntro() {
     clearOutput();
 
@@ -257,17 +220,18 @@
     promptBlock.innerHTML = '<div class="out-prompt-line">$ <span id="about-intro-cmd"></span></div>';
     output.appendChild(promptBlock);
 
-    const cmdSpan = document.getElementById('about-intro-cmd') as HTMLElement;
+    const cmdSpan = document.getElementById('about-intro-cmd');
     for (const ch of 'cat about.txt') {
       cmdSpan.textContent += ch;
       await sleep(45 + Math.random() * 30);
     }
     await sleep(300);
 
-    appendOutput(whoAmIHTML());
-    await sleep(600); appendOutput(outsideWorkHTML());
-    await sleep(600); appendOutput(thisSiteHTML());
+    for (let i = 0; i < sectionsHTML.length; i++) {
+      if (i > 0) await sleep(600);
+      appendOutput(sectionsHTML[i]);
+    }
   }
 
-  (window as any).runAboutIntro = runAboutIntro;
+  window.runAboutIntro = runAboutIntro;
 </script>
