@@ -26,34 +26,30 @@ const { title } = Astro.props;
     <script is:inline>
       /* Decide whether to skip the boot cinematic before paint, so the boot
          screen never flashes for returning visitors / reduced-motion users.
-         Two ways to force a replay: a one-shot sessionStorage flag (set by
-         the green-dot click handler so the URL stays clean) or `?boot=1` in
-         the URL (manual override; we strip the param after reading it). */
+         The bootSeen flag lives in sessionStorage so it clears when the tab
+         or browser closes — the cinematic plays at the start of every fresh
+         browsing session, but not on intra-session reloads. ?boot=1 in the
+         URL is a manual override; the param is stripped after read so the
+         URL bar stays clean. */
       (function () {
         try {
           var params = new URLSearchParams(window.location.search);
           var forcedByUrl = params.get('boot') === '1';
-          var forcedBySession = false;
-          try {
-            forcedBySession = sessionStorage.getItem('whoisbruce:bootForce') === '1';
-            if (forcedBySession) sessionStorage.removeItem('whoisbruce:bootForce');
-          } catch (_) {}
 
           if (forcedByUrl) {
             params.delete('boot');
             var qs = params.toString();
             var clean = window.location.pathname + (qs ? '?' + qs : '') + window.location.hash;
             history.replaceState(null, '', clean);
+            return;
           }
 
-          if (forcedByUrl || forcedBySession) return;
-
-          var seen = localStorage.getItem('whoisbruce:bootSeen') === '1';
+          var seen = sessionStorage.getItem('whoisbruce:bootSeen') === '1';
           var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
           if (seen || reduced) {
             document.documentElement.dataset.bootSkip = '1';
             if (reduced && !seen) {
-              try { localStorage.setItem('whoisbruce:bootSeen', '1'); } catch (_) {}
+              try { sessionStorage.setItem('whoisbruce:bootSeen', '1'); } catch (_) {}
             }
           }
         } catch (_) {}
@@ -395,11 +391,8 @@ const { title } = Astro.props;
             ? e.target.closest('.dot-g')
             : null;
           if (!target) return;
-          try {
-            localStorage.removeItem('whoisbruce:bootSeen');
-            sessionStorage.setItem('whoisbruce:bootForce', '1');
-          } catch (_) {}
-          /* Reload in place. The head script picks up the session flag and
+          try { sessionStorage.removeItem('whoisbruce:bootSeen'); } catch (_) {}
+          /* Reload in place. The head script sees no bootSeen flag and
              plays the cinematic; the URL bar stays unchanged. */
           window.location.reload();
         });
