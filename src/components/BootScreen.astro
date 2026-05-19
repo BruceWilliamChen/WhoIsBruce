@@ -31,9 +31,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Opaque from frame 1 — the CRT power-on flicker now lives on
+       `.boot-flicker` (a scanline overlay) so the boot screen itself
+       never reveals the cover terminal underneath. */
     opacity: 1;
     transition: opacity 0.5s ease;
-    animation: crt-power-on 0.55s ease-out;
   }
 
   /* Anti-FOUC: when Layout's inline head script decides to skip boot,
@@ -42,33 +44,42 @@
     display: none;
   }
 
-  /* Stop the power-on animation when a skip is requested so the opacity
-     transition (1 → 0) takes over cleanly instead of waiting for the
-     animation's last keyframe. */
   .boot-screen.boot-fade-out {
     opacity: 0;
     pointer-events: none;
-    animation: none;
   }
 
   :global([data-theme="light"]) .boot-screen {
     color: var(--accent-red);
   }
 
-  @keyframes crt-power-on {
-    0%   { opacity: 0; }
-    10%  { opacity: 0.55; }
-    18%  { opacity: 0.18; }
-    32%  { opacity: 1; }
-    44%  { opacity: 0.45; }
-    62%  { opacity: 1; }
-    100% { opacity: 1; }
-  }
-
+  /* CRT power-on: a thin bright horizontal scanline at vertical center that
+     snaps in, flickers, then expands vertically and fades out — revealing
+     the BIOS content underneath. Uses currentColor so it themes
+     automatically (phosphor green dark / HAL red light). */
   .boot-flicker {
     position: absolute;
-    inset: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: currentColor;
+    transform-origin: center center;
+    transform: scaleY(0);
+    opacity: 0;
     pointer-events: none;
+    animation: crt-power-on 0.55s ease-out forwards;
+    z-index: 2;
+  }
+
+  @keyframes crt-power-on {
+    0%   { transform: scaleY(0);     opacity: 0; }
+    10%  { transform: scaleY(0.005); opacity: 1; }
+    18%  { transform: scaleY(0.005); opacity: 0.3; }
+    25%  { transform: scaleY(0.005); opacity: 1; }
+    35%  { transform: scaleY(0.012); opacity: 0.95; }
+    60%  { transform: scaleY(0.4);   opacity: 0.4; }
+    100% { transform: scaleY(1);     opacity: 0; }
   }
 
   .boot-inner {
@@ -173,7 +184,7 @@
         if (finished) return;
         finished = true;
         screen!.removeEventListener('transitionend', finish);
-        try { localStorage.setItem('whoisbruce:bootSeen', '1'); } catch (_) {}
+        try { sessionStorage.setItem('whoisbruce:bootSeen', '1'); } catch (_) {}
         screen!.remove();
         window.dispatchEvent(new CustomEvent('boot:done'));
       };
