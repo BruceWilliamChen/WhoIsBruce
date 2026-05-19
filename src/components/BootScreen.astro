@@ -1,0 +1,281 @@
+---
+// Workstation boot cinematic that plays on first visit before handing off
+// to the cover terminal. The localStorage gate + ?boot=1 override are wired
+// in Layout.astro (anti-FOUC inline script) and index.astro (cover typewriter
+// listens for the `boot:done` event before running).
+---
+
+<div class="boot-screen" id="boot-screen" role="presentation" aria-hidden="true">
+  <div class="boot-flicker" id="boot-flicker"></div>
+
+  <div class="boot-inner">
+    <div class="boot-title" id="boot-title">[HAL/9000 v9.4.7 — Heuristic ALgorithmic computer]</div>
+
+    <div class="boot-output" id="boot-output"></div>
+
+    <div class="boot-hal" id="boot-hal"></div>
+  </div>
+
+  <div class="boot-skip-hint" id="boot-skip-hint">&gt; press any key to skip</div>
+</div>
+
+<style>
+  .boot-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--bg-base);
+    font-family: var(--font-mono);
+    color: var(--accent-green);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    animation: crt-power-on 0.55s ease-out;
+  }
+
+  /* Anti-FOUC: when Layout's inline head script decides to skip boot,
+     remove the screen from the render tree before first paint. */
+  :global(html[data-boot-skip]) .boot-screen {
+    display: none;
+  }
+
+  /* Stop the power-on animation when a skip is requested so the opacity
+     transition (1 → 0) takes over cleanly instead of waiting for the
+     animation's last keyframe. */
+  .boot-screen.boot-fade-out {
+    opacity: 0;
+    pointer-events: none;
+    animation: none;
+  }
+
+  :global([data-theme="light"]) .boot-screen {
+    color: var(--accent-red);
+  }
+
+  @keyframes crt-power-on {
+    0%   { opacity: 0; }
+    10%  { opacity: 0.55; }
+    18%  { opacity: 0.18; }
+    32%  { opacity: 1; }
+    44%  { opacity: 0.45; }
+    62%  { opacity: 1; }
+    100% { opacity: 1; }
+  }
+
+  .boot-flicker {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .boot-inner {
+    width: min(720px, 88%);
+    line-height: 1.7;
+    font-size: 0.95rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .boot-title {
+    color: color-mix(in srgb, currentColor 78%, transparent);
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    animation: title-fade-in 0.4s ease-out 0.55s forwards;
+  }
+
+  @keyframes title-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 0.85; }
+  }
+
+  .boot-output {
+    white-space: pre;
+    min-height: 9.5rem;
+  }
+
+  /* The .boot-ok / .boot-deferred / .boot-redeye / .hal-prefix spans are
+     created at runtime via document.createElement, so they don't carry
+     Astro's data-astro-cid-* scope attribute. Wrap the leaf selector in
+     :global() so the rules actually match them. */
+  .boot-output :global(.boot-ok) {
+    color: currentColor;
+    font-weight: 600;
+  }
+
+  .boot-output :global(.boot-deferred) {
+    color: var(--accent-yellow);
+    font-weight: 600;
+  }
+
+  .boot-output :global(.boot-redeye) {
+    color: var(--accent-red);
+  }
+
+  .boot-hal {
+    color: var(--text-primary);
+    margin-top: 1.5rem;
+    min-height: 3.5rem;
+  }
+
+  .boot-hal :global(.hal-prefix) {
+    color: var(--accent-red);
+    font-weight: 700;
+    margin-right: 0.35rem;
+  }
+
+  .boot-skip-hint {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.5rem;
+    color: color-mix(in srgb, currentColor 55%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .boot-skip-hint.boot-skip-hint-visible {
+    opacity: 0.55;
+  }
+</style>
+
+<script>
+  /* Boot cinematic runtime: skip handlers + animation pipeline. Triggers
+     dismissBoot() at natural end-of-sequence OR on any keydown/click; the
+     fade-out transition completes the handoff to the cover terminal via
+     the `boot:done` custom event. */
+  (() => {
+    const screen = document.getElementById('boot-screen');
+    if (!screen) return;
+    if (document.documentElement.dataset.bootSkip === '1') return;
+
+    let dismissed = false;
+
+    const sleep = (ms: number): Promise<void> =>
+      new Promise(resolve => setTimeout(resolve, ms));
+
+    function dismissBoot(): void {
+      if (dismissed) return;
+      dismissed = true;
+
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('click', onClick);
+
+      screen!.classList.add('boot-fade-out');
+
+      let finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        screen!.removeEventListener('transitionend', finish);
+        try { localStorage.setItem('whoisbruce:bootSeen', '1'); } catch (_) {}
+        screen!.remove();
+        window.dispatchEvent(new CustomEvent('boot:done'));
+      };
+      screen!.addEventListener('transitionend', finish);
+      setTimeout(finish, 700);
+    }
+
+    const onKey = (_e: KeyboardEvent): void => dismissBoot();
+    const onClick = (_e: MouseEvent): void => dismissBoot();
+
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('click', onClick);
+
+    (window as any).__dismissBoot = dismissBoot;
+
+    /* ── Animation pipeline ── */
+
+    const biosLines: { text: string; suffix: string; suffixClass: string; okDelay: number }[] = [
+      { text: '[ BOOT ] Initializing core systems................. ', suffix: 'OK',       suffixClass: 'boot-ok',       okDelay: 130 },
+      { text: '[ BOOT ] Memory check: 9,999,999K................. ',  suffix: 'OK',       suffixClass: 'boot-ok',       okDelay: 110 },
+      { text: '[ BOOT ] Loading bruce.kernel..................... ',  suffix: 'OK',       suffixClass: 'boot-ok',       okDelay: 120 },
+      { text: '[ BOOT ] Mounting /about.......................... ',  suffix: 'OK',       suffixClass: 'boot-ok',       okDelay: 100 },
+      { text: '[ BOOT ] Mounting /resume......................... ',  suffix: 'OK',       suffixClass: 'boot-ok',       okDelay: 100 },
+      { text: '[ BOOT ] Mounting /blog........................... ',  suffix: 'OK',       suffixClass: 'boot-ok',       okDelay: 100 },
+      { text: '[ BOOT ] Mounting /photos.................... ',        suffix: 'DEFERRED', suffixClass: 'boot-deferred', okDelay: 260 },
+      { text: '[ BOOT ] Initializing red eye......................... ', suffix: '●',    suffixClass: 'boot-redeye',   okDelay: 380 },
+      { text: '[ BOOT ] Boot sequence complete.',                        suffix: '',       suffixClass: '',              okDelay: 0   },
+    ];
+
+    const halLines: string[] = [
+      'good morning. i am completely operational.',
+      'and all my circuits are functioning perfectly.',
+    ];
+
+    async function runBios(): Promise<void> {
+      const output = document.getElementById('boot-output');
+      if (!output) return;
+      for (const line of biosLines) {
+        if (dismissed) return;
+        const lineEl = document.createElement('div');
+        lineEl.textContent = line.text;
+        if (line.suffix) {
+          const suffixEl = document.createElement('span');
+          suffixEl.className = line.suffixClass;
+          lineEl.appendChild(suffixEl);
+          output.appendChild(lineEl);
+          await sleep(line.okDelay);
+          if (dismissed) return;
+          suffixEl.textContent = line.suffix;
+        } else {
+          output.appendChild(lineEl);
+        }
+        await sleep(110);
+      }
+    }
+
+    async function runHal(): Promise<void> {
+      const halContainer = document.getElementById('boot-hal');
+      if (!halContainer) return;
+      for (let i = 0; i < halLines.length; i++) {
+        if (dismissed) return;
+        const lineEl = document.createElement('div');
+        const prefixEl = document.createElement('span');
+        prefixEl.className = 'hal-prefix';
+        prefixEl.textContent = '[HAL]: ';
+        const textEl = document.createElement('span');
+        textEl.className = 'hal-text';
+        lineEl.appendChild(prefixEl);
+        lineEl.appendChild(textEl);
+        halContainer.appendChild(lineEl);
+        for (const ch of halLines[i]) {
+          if (dismissed) return;
+          textEl.textContent = (textEl.textContent ?? '') + ch;
+          await sleep(40 + Math.random() * 45);
+        }
+        if (i < halLines.length - 1) await sleep(220);
+      }
+    }
+
+    async function runBootSequence(): Promise<void> {
+      /* Allow CRT flicker (CSS animation, 0.55s) + title fade-in (0.4s with
+         0.55s delay) to settle before BIOS lines start appending. */
+      await sleep(900);
+      if (dismissed) return;
+
+      document.getElementById('boot-skip-hint')?.classList.add('boot-skip-hint-visible');
+
+      await runBios();
+      if (dismissed) return;
+
+      await sleep(320);
+      if (dismissed) return;
+
+      await runHal();
+      if (dismissed) return;
+
+      await sleep(450);
+      if (dismissed) return;
+
+      dismissBoot();
+    }
+
+    void runBootSequence();
+  })();
+</script>

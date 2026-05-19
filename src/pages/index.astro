@@ -4,6 +4,7 @@ import About from '../components/About.astro';
 import Resume from '../components/Resume.astro';
 import Photos from '../components/Photos.astro';
 import Blog from '../components/Blog.astro';
+import BootScreen from '../components/BootScreen.astro';
 
 const tabs = [
   { id: 'cover',  label: 'Home'   },
@@ -15,6 +16,7 @@ const tabs = [
 ---
 
 <Layout title="Bruce Chen">
+  <BootScreen />
   <div class="book-wrapper">
     <div class="book">
 
@@ -677,7 +679,15 @@ const tabs = [
     cName.style.opacity = '0';
   }
 
-  runTypewriter();
+  /* Gate the cover typewriter on the boot cinematic. Layout's inline head
+     script sets `html[data-boot-skip]` for returning / reduced-motion / no-?boot=1
+     visitors; in that case the boot screen is display:none and we start typing
+     immediately. Otherwise we wait for BootScreen to dispatch `boot:done`. */
+  if (document.documentElement.dataset.bootSkip === '1') {
+    runTypewriter();
+  } else {
+    window.addEventListener('boot:done', () => runTypewriter(), { once: true });
+  }
 
   /* ── Tabs ── */
   const tabBtns = document.querySelectorAll<HTMLElement>('.tab-btn');
